@@ -1,0 +1,18 @@
+{
+    "app": {
+        "port": 3000
+    },
+    "db": {
+        "host": "localhost",
+        "port": 27017,
+        "name": "RestaurantManagement",
+        "useMongoClient": true
+    },
+    "logger": {
+        "errorLog": "./log/RestaurantManagementAPI.log"
+    },
+    "jwt": {
+        "secretKey": "MySecretKey",
+        "expiresIn": "30m"
+    }
+}
