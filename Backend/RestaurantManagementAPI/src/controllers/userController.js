@@ -3,6 +3,7 @@ import { logger } from '../shared/utilities/loggingUtilities';
 import { User } from '../models/User';
 import HttpResponseResult from '../shared/models/HttpResponseResult';
 import { UNAUTHORIZED_REQUEST } from '../shared/constants/errorMessages';
+import CustomException from '../shared/models/CustomException';
 
 export const register = async (req, res) => {
 
@@ -30,11 +31,15 @@ export const login = async (req, res) => {
 
         let userInfo = await userServices.login(username, password);
 
-        return await res.status(200).send(new HttpResponseResult(true, "", userInfo));
+        return await res.send(new HttpResponseResult(true, "", userInfo));
 
     } catch (err) {
+        if (err.isBusinessException) {
+            return await res.send(new HttpResponseResult(false, err.message, null));
+        }
+
         logger.error(err);
-        return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
+        return await res.send(new HttpResponseResult(false, err, null));
     }
 }
 
