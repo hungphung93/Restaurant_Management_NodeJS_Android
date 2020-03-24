@@ -23,7 +23,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements ITableListEventListener {
+public class MainActivity extends AppCompatActivity{
 
     EditText etUsername;
     EditText etPassword;
@@ -70,17 +70,13 @@ public class MainActivity extends AppCompatActivity implements ITableListEventLi
         UserInfo userInfo = response.GetData();
         LoggingUser.setUserInfo(userInfo);
 
-        Intent intent = new Intent(this, TableListActivity.class);
+        //Intent intent = new Intent(this, TableListActivity.class);
+        Intent intent = new Intent(this, TableOrderActivity.class);
         startActivity(intent);
     }
 
     private void handleLoginError(Throwable t){
         Toast.makeText(this, "Internal error happened. Please try later.",
                 Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onTableStatusClick(Table table) {
-        Toast.makeText(this, table.getTableStatus(), Toast.LENGTH_LONG).show();
     }
 }
