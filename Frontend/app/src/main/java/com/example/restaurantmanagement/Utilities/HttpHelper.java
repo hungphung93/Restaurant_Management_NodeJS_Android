@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HttpHelper{
     // Trailing slash is needed
-    private static final String BASE_URL = "http://192.168.0.21:3000/";
+    private static final String BASE_URL = "http://192.168.0.24:3000/";
     private static Retrofit instance = null;
 
 

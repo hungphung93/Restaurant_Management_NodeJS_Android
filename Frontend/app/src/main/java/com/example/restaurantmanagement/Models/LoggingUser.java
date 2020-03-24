@@ -4,6 +4,9 @@ public class LoggingUser {
     private static UserInfo userInfo;
 
     public static UserInfo getUserInfo(){
+        if(userInfo == null)
+            userInfo = new UserInfo();
+
         return userInfo;
     }
 
