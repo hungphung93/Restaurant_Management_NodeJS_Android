@@ -2,6 +2,7 @@ package com.example.restaurantmanagement.Adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +22,13 @@ import java.util.List;
 public class MyTableRecyclerViewAdapter extends RecyclerView.Adapter<MyTableRecyclerViewAdapter.ViewHolder> {
 
     private final List<Table> lstTable;
+    private final Context context;
     private final ITableListEventListener mListener;
 
-    public MyTableRecyclerViewAdapter(List<Table> items, ITableListEventListener listener) {
-        lstTable = items;
-        mListener = listener;
+    public MyTableRecyclerViewAdapter(Context context, List<Table> items, ITableListEventListener listener) {
+        this.context = context;
+        this.lstTable = items;
+        this.mListener = listener;
     }
 
     @Override
@@ -43,14 +46,14 @@ public class MyTableRecyclerViewAdapter extends RecyclerView.Adapter<MyTableRecy
         String openAt = lstTable.get(position).getOpenAt();
         holder.tvOpenAt.setText(openAt);
 
-        holder.btnStatus.setText(lstTable.get(position).getTableStatus());
+        holder.tvStatus.setText(lstTable.get(position).getTableStatus());
 
         if(lstTable.get(position).getTableStatus().equals("Serving"))
-            holder.btnStatus.setBackgroundColor(Color.parseColor("#D59E17"));
+            holder.tvStatus.setTextColor(context.getColor(R.color.darkYellow));
         else
-            holder.btnStatus.setBackgroundColor(Color.parseColor("#0A6D00"));
+            holder.tvStatus.setTextColor(context.getColor(R.color.darkGreen));
 
-        holder.btnStatus.setOnClickListener(new View.OnClickListener() {
+        holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
@@ -71,7 +74,7 @@ public class MyTableRecyclerViewAdapter extends RecyclerView.Adapter<MyTableRecy
         public final View mView;
         public final TextView tvTableName;
         public final TextView tvOpenAt;
-        public final Button btnStatus;
+        public final TextView tvStatus;
         public Table table;
 
         public ViewHolder(View view) {
@@ -79,7 +82,7 @@ public class MyTableRecyclerViewAdapter extends RecyclerView.Adapter<MyTableRecy
             mView = view;
             tvTableName = (TextView) view.findViewById(R.id.tvTableName);
             tvOpenAt = (TextView) view.findViewById(R.id.tvOpenAt);
-            btnStatus = (Button) view.findViewById(R.id.btnStatus);
+            tvStatus = (TextView) view.findViewById(R.id.btnStatus);
         }
 
         @Override

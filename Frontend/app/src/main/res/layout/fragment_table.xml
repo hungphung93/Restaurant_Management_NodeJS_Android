@@ -2,14 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_margin="8dp"
+    android:background="@drawable/bg_light_green_convex">
 
     <TextView
         android:id="@+id/tvTableName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="16dp"
+        android:textStyle="bold"
         android:hint="Table Name"/>
 
     <TextView
@@ -18,16 +21,16 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_weight="1"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:textStyle="bold"
+        android:textSize="16dp"/>
 
-
-    <Button
+    <TextView
         android:id="@+id/btnStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="22dp"
+        android:textSize="16dp"
         android:hint="Status"
-        android:textAppearance="?attr/textAppearanceListItem"
         android:textColor="@color/colorWhite"
         android:textStyle="bold" />
 </LinearLayout>

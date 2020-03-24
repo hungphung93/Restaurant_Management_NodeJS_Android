@@ -65,6 +65,6 @@ public class TableListActivity extends AppCompatActivity implements ITableListEv
     @Override
     public void onTableStatusClick(Table table) {
 
-        Toast.makeText(this, table.getTableStatus(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, String.format("This table is %s", table.getTableStatus()) , Toast.LENGTH_SHORT).show();
     }
 }

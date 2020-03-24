@@ -19,12 +19,6 @@ import com.example.restaurantmanagement.R;
 
 import java.util.ArrayList;
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
 public class TableFragment extends Fragment {
 
     // TODO: Customize parameter argument names
@@ -76,7 +70,7 @@ public class TableFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyTableRecyclerViewAdapter(this.ListTable, mListener));
+            recyclerView.setAdapter(new MyTableRecyclerViewAdapter(context ,this.ListTable, mListener));
         }
         return view;
     }
