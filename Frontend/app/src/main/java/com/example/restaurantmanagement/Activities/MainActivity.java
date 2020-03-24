@@ -1,4 +1,4 @@
-package com.example.restaurantmanagement;
+package com.example.restaurantmanagement.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,18 +9,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.restaurantmanagement.EventListenerInterface.ITableListEventListener;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.AuthorizeUser;
 import com.example.restaurantmanagement.Models.BaseResponse;
 import com.example.restaurantmanagement.Models.LoggingUser;
+import com.example.restaurantmanagement.Models.Table;
 import com.example.restaurantmanagement.Models.UserInfo;
+import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.AuthServices;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ITableListEventListener {
 
     EditText etUsername;
     EditText etPassword;
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         try{
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+
+            Toast.makeText(getApplicationContext(),"RUNNING", Toast.LENGTH_SHORT).show();
 
         }catch(Exception ex){
             Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_SHORT).show();
@@ -64,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
         }
         UserInfo userInfo = response.GetData();
         LoggingUser.setUserInfo(userInfo);
+
+        Intent intent = new Intent(this, TableListActivity.class);
+        startActivity(intent);
     }
 
     private void handleLoginError(Throwable t){
@@ -71,4 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onTableStatusClick(Table table) {
+        Toast.makeText(this, table.getTableStatus(), Toast.LENGTH_LONG).show();
+    }
 }
