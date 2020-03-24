@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity{
         LoggingUser.setUserInfo(userInfo);
 
         //Intent intent = new Intent(this, TableListActivity.class);
-        Intent intent = new Intent(this, TableOrderActivity.class);
+        //Intent intent = new Intent(this, TableOrderActivity.class);
+        Intent intent = new Intent(this, OrderListActivity.class);
         startActivity(intent);
     }
 

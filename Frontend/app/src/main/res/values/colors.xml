@@ -5,4 +5,9 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorWhite">#fff</color>
     <color name="colorListRowSeparator">#EEECEC</color>
+    <color name="lightGreen">#E2F3E2</color>
+    <color name="darkYellow">#FF9800</color>
+    <color name="darkGreen">#018001</color>
+    <color name="blue">#0000FF</color>
+
 </resources>
