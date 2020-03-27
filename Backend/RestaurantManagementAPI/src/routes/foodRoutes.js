@@ -1,5 +1,5 @@
 import {
-    getAllFoods
+    getAllFoods, addNewFood
 } from '../controllers/foodController';
 
 import { loginRequired } from '../controllers/userController';
@@ -11,8 +11,17 @@ const routes = (app) => {
             console.log(`Request from: ${req.originalUrl}`)
             console.log(`Request type: ${req.method}`)
             next();
-        }, loginRequired, getAllFoods);
+        }, getAllFoods);
+    //}, loginRequired, getAllFoods);
 
+    app.route('/food/addNewFood')
+        .post((req, res, next) => {
+            // middleware
+            console.log(`Request from: ${req.originalUrl}`)
+            console.log(`Request type: ${req.method}`)
+            next();
+        }, addNewFood);
+    //}, loginRequired, getAllFoods);
 }
 
 
