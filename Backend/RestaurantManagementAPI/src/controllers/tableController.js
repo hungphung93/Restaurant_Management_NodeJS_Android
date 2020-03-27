@@ -11,7 +11,6 @@ export const getAllTables = async (req, res) => {
 
     } catch (err) {
         logger.error(err);
-        //console.log(err);
         return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
     }
 };
@@ -28,7 +27,6 @@ export const createTable = async (req, res) => {
 
     } catch (err) {
         logger.error(err);
-        //console.log(err);
         return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
     }
 }
@@ -36,15 +34,29 @@ export const createTable = async (req, res) => {
 export const getTableDetail = async (req, res) => {
     try {
         let data = req.body;
-        let tableId = data.tableId;
+        let tableName = data.tableName;
 
-        let tableInfo = await tableServices.getTableDetail(tableId);
+        let tableInfo = await tableServices.getTableDetail(tableName);
 
         return await res.status(200).send(new HttpResponseResult(true, "", tableInfo));
 
     } catch (err) {
         logger.error(err);
-        console.log(err);
+        return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
+    }
+}
+
+export const openTable = async (req, res) => {
+    try {
+        let data = req.body;
+        let tableName = data.tableName;
+
+        let isOpened = await tableServices.openTable(tableName);
+
+        return await res.status(200).send(new HttpResponseResult(true, "", isOpened));
+
+    } catch (err) {
+        logger.error(err);
         return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
     }
 }
