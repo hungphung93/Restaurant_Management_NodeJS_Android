@@ -17,7 +17,7 @@ export const register = async (req, res) => {
         return await res.status(200).send(new HttpResponseResult(true, "", createdUser));
 
     } catch (err) {
-        logger.err(err);
+        logger.error(err);
         return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
     }
 };

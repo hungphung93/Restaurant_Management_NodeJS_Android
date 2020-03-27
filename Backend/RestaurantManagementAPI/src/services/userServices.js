@@ -28,8 +28,6 @@ export const login = async (username, password) => {
 
         return await new AuthenticatedUser(username, access_token, createdUser.role);
     } catch (err) {
-        console.log(JSON.stringify(err));
-        console.log("===============================");
         throw err;
     }
 }
