@@ -1,4 +1,8 @@
 import { TableEntity } from '../entities/TableEntity';
+import { TransactionEntity } from '../entities/TransactionEntity';
+import { TransactionStatus } from '../shared/enum/TransactionStatus';
+import { TableStatus } from '../shared/enum/TableStatus';
+import { Transaction } from '../models/Transaction';
 
 
 export const getAllTables = async () => {
@@ -24,11 +28,33 @@ export const createTable = async (tableName) => {
     }
 }
 
-export const getTableDetail = async (tableId) => {
+export const getTableDetail = async (tableName) => {
     try {
-        let tableDetail = await TableEntity.findOne({ _id: tableId });
+        let transaction = await TransactionEntity.findOne({ table_name: tableName, status: TransactionStatus.PROCESSING });
 
-        return await tableDetail;
+        return await transaction;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const openTable = async (tableName) => {
+    try {
+        let table = await TableEntity.findOne({ name: tableName });
+
+        table.status = TableStatus.SERVING;
+
+        // Change table Status
+        await table.save();
+
+        let transaction = new TransactionEntity();
+        transaction.table_name = tableName;
+
+        // Add new transaction
+        await transaction.save();
+
+        return await true;
+
     } catch (err) {
         throw err;
     }
