@@ -43,6 +43,7 @@ export const openTable = async (tableName) => {
         let table = await TableEntity.findOne({ name: tableName });
 
         table.status = TableStatus.SERVING;
+        table.open_at = Date.now();
 
         // Change table Status
         await table.save();

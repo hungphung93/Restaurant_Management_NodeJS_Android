@@ -15,7 +15,7 @@ const TransactionSchema = new mongoose.Schema({
     },
     open_at: {
         type: Date,
-        default: Date.now
+        default: Date.now()
     },
     ordered_foods: [mongoose.Schema.Types.Mixed],
     total_amount: {
