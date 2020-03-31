@@ -1,83 +1,102 @@
 package com.example.restaurantmanagement.Activities;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.restaurantmanagement.Enums.TableStatus;
 import com.example.restaurantmanagement.EventListenerInterface.ITableListEventListener;
+import com.example.restaurantmanagement.Fragments.TableFragment;
 import com.example.restaurantmanagement.Models.ApiResponse;
-import com.example.restaurantmanagement.Models.AuthorizeUser;
 import com.example.restaurantmanagement.Models.BaseResponse;
-import com.example.restaurantmanagement.Models.LoggingUser;
+import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Table;
-import com.example.restaurantmanagement.Models.UserInfo;
 import com.example.restaurantmanagement.R;
-import com.example.restaurantmanagement.Services.Implementation.AuthServices;
+import com.example.restaurantmanagement.Services.Implementation.TableServices;
+import com.google.android.material.navigation.NavigationView;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements ITableListEventListener , NavigationView.OnNavigationItemSelectedListener {
 
-    EditText etUsername;
-    EditText etPassword;
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
+
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+            setContentView(R.layout.table_list);
 
-            Toast.makeText(getApplicationContext(),"RUNNING", Toast.LENGTH_SHORT).show();
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
-        }catch(Exception ex){
-            Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_SHORT).show();
+            drawer = findViewById(R.id.draw_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,  toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
+        }
+        catch(Exception ex){
+            Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
-    public void login(View view) {
-        try{
-            etUsername = findViewById(R.id.etUsername);
-            etPassword = findViewById(R.id.etPassword);
+    @Override
+    public void onBackPressed(){
+        if(drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
+    }
 
-            String username = etUsername.getText().toString();
-            String password = etPassword.getText().toString();
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
-            ApiResponse<UserInfo> userInfo = AuthServices.Login(new AuthorizeUser(username, password));
-            userInfo.Subscribe(this::handleLoginSuccess, this::handleLoginError);
-        }catch(Exception ex){
-            Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        Fragment fragment = new Fragment();
+
+        switch(menuItem.getItemId()){
+            case R.id.nav_menu:
+                fragment = new TableFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.list_table_frame, fragment)
+                        .commit();
+                break;
+            case R.id.nav_table:
+                fragment = new TableFragment();
+                getSupportFragmentManager().beginTransaction()
+
+                        .replace(R.id.list_table_frame, fragment)
+                        .commit();
+                break;
+            case R.id.nav_food:
+                Intent intent = new Intent(this, OrderListActivity.class);
+                startActivity(intent);
         }
+
+        return true;
     }
 
-    public void reset(View view) {
-        etUsername.setText("");
-        etPassword.setText("");
-    }
+    @Override
+    public void onTableStatusClick(Table table) {
 
-    private void handleLoginSuccess(BaseResponse<UserInfo> response){
-        if(!response.IsSuccess())
-        {
-            Toast.makeText(getApplicationContext(),response.GetMessage(), Toast.LENGTH_LONG).show();
-            return;
-        }
-        UserInfo userInfo = response.GetData();
-        LoggingUser.setUserInfo(userInfo);
-
-        //Intent intent = new Intent(this, TableListActivity.class);
-        //Intent intent = new Intent(this, TableOrderActivity.class);
-        Intent intent = new Intent(this, OrderListActivity.class);
-        startActivity(intent);
-    }
-
-    private void handleLoginError(Throwable t){
-        Toast.makeText(this, "Internal error happened. Please try later.",
-                Toast.LENGTH_LONG).show();
     }
 }
