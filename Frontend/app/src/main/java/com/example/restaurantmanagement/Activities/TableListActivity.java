@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,10 +26,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
-public class TableListActivity extends AppCompatActivity implements ITableListEventListener, NavigationView.OnNavigationItemSelectedListener {
-
-    private String selectedTable = "";
-    private final String TABLE_NAME = "TableName";
+public class TableListActivity extends AppCompatActivity implements ITableListEventListener , NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
 
@@ -50,9 +48,6 @@ public class TableListActivity extends AppCompatActivity implements ITableListEv
 
             drawer.addDrawerListener(toggle);
             toggle.syncState();
-
-            ApiResponse<ArrayList<Table>> lstTables = TableServices.getAllTables();
-            lstTables.Subscribe(this::handleGetTablesSuccess, this::handleAPIFailure);
         }
         catch(Exception ex){
             Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_LONG).show();
@@ -72,90 +67,36 @@ public class TableListActivity extends AppCompatActivity implements ITableListEv
 
     }
 
-    @Override
-    public void onTableStatusClick(Table table) {
-        try{
-            selectedTable = table.getTableName();
-
-            if(table.getTableStatus().equals(TableStatus.EMPTY.toString()))
-            {
-                ApiResponse<Boolean> isOpened = TableServices.openTable(new OpenTableRequest(table.getTableName()));
-                isOpened.Subscribe(this::handleOpenTableSuccess, this::handleAPIFailure);
-            }
-            else
-                goToTableDetail();
-
-        }catch(Exception ex){
-            Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-
-    private void goToTableDetail(){
-        Intent intent = new Intent(this, OrderListActivity.class);
-        intent.putExtra(TABLE_NAME, selectedTable);
-        startActivity(intent);
-    }
-
-    private void handleGetTablesSuccess(BaseResponse<ArrayList<Table>> response){
-        try{
-            if(!response.IsSuccess())
-            {
-                Toast.makeText(getApplicationContext(), response.GetMessage(), Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            ArrayList<Table> lstTable = response.GetData();
-            TableFragment tableFragment = new TableFragment(lstTable);
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.list_table_frame, tableFragment)
-                    .commit();
-        }catch(Exception ex){
-            Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-
-    private void handleOpenTableSuccess(BaseResponse<Boolean> response){
-        try{
-            if(!response.IsSuccess())
-            {
-                Toast.makeText(getApplicationContext(), response.GetMessage(), Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            Boolean isOpened = response.GetData();
-
-            if(isOpened){
-                goToTableDetail();
-            }
-
-        }catch(Exception ex){
-            Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void handleAPIFailure(Throwable t){
-        Toast.makeText(this, "Internal error happened. Please try later.",
-                Toast.LENGTH_LONG).show();
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Intent intent = new Intent();
+
+        Fragment fragment = new Fragment();
+
         switch(menuItem.getItemId()){
             case R.id.nav_menu:
-                intent = new Intent(this, TableListActivity.class);
+                fragment = new TableFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.list_table_frame, fragment)
+                        .commit();
                 break;
             case R.id.nav_table:
-                intent = new Intent(this, TableListActivity.class);
+                fragment = new TableFragment();
+                getSupportFragmentManager().beginTransaction()
+
+                        .replace(R.id.list_table_frame, fragment)
+                        .commit();
                 break;
             case R.id.nav_food:
-                intent = new Intent(this, OrderListActivity.class);
+                Intent intent = new Intent(this, OrderListActivity.class);
+                startActivity(intent);
         }
 
-        startActivity(intent);
         return true;
+    }
+
+    @Override
+    public void onTableStatusClick(Table table) {
+
     }
 }
