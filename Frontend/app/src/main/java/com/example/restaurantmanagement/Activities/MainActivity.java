@@ -26,7 +26,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements ITableListEventListener , NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
 
@@ -48,6 +48,12 @@ public class MainActivity extends AppCompatActivity implements ITableListEventLi
 
             drawer.addDrawerListener(toggle);
             toggle.syncState();
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.list_table_frame, new TableFragment())
+                    .commit();
+
+            navigationView.setCheckedItem(R.id.nav_table);
         }
         catch(Exception ex){
             Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_LONG).show();
@@ -92,11 +98,8 @@ public class MainActivity extends AppCompatActivity implements ITableListEventLi
                 startActivity(intent);
         }
 
+        drawer.closeDrawer(GravityCompat.START);
+
         return true;
-    }
-
-    @Override
-    public void onTableStatusClick(Table table) {
-
     }
 }

@@ -86,12 +86,15 @@ public class TableFragment extends Fragment implements ITableListEventListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        /*
         if (context instanceof ITableListEventListener) {
             mListener = (ITableListEventListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement ITableListEventListener");
-        }
+        }*/
+
+        mListener = this;
     }
 
     @Override
