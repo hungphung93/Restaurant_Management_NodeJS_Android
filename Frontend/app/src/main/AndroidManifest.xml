@@ -13,7 +13,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.MainActivity"></activity>
         <activity android:name=".Activities.TableOrderActivity"></activity>
-        <activity android:name=".Activities.OrderListActivity"></activity>
         <activity android:name=".Activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

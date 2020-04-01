@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.restaurantmanagement.Enums.TableStatus;
 import com.example.restaurantmanagement.EventListenerInterface.ITableListEventListener;
+import com.example.restaurantmanagement.Fragments.OrderedFoodFragment;
 import com.example.restaurantmanagement.Fragments.TableFragment;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         try{
 
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.table_list);
+            setContentView(R.layout.activity_main);
 
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
             toggle.syncState();
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.list_table_frame, new TableFragment())
+                    .replace(R.id.main_activity_frame, new TableFragment())
                     .commit();
 
             navigationView.setCheckedItem(R.id.nav_table);
@@ -82,21 +83,18 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         switch(menuItem.getItemId()){
             case R.id.nav_menu:
                 fragment = new TableFragment();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.list_table_frame, fragment)
-                        .commit();
                 break;
             case R.id.nav_table:
                 fragment = new TableFragment();
-                getSupportFragmentManager().beginTransaction()
-
-                        .replace(R.id.list_table_frame, fragment)
-                        .commit();
                 break;
             case R.id.nav_food:
-                Intent intent = new Intent(this, OrderListActivity.class);
-                startActivity(intent);
+                fragment = new OrderedFoodFragment();
+                break;
         }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_activity_frame, fragment)
+                .commit();
 
         drawer.closeDrawer(GravityCompat.START);
 

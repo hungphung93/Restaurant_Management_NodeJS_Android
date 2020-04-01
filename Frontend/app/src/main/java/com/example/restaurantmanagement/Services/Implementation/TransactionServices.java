@@ -1,39 +1,12 @@
-package com.example.restaurantmanagement.Activities;
+package com.example.restaurantmanagement.Services.Implementation;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.util.Log;
-
-import com.example.restaurantmanagement.Adapter.OrderListAdapter;
 import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.R;
 
 import java.util.ArrayList;
 
-public class OrderListActivity extends AppCompatActivity {
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_list);
-
-//        if (getActionBar() != null) getActionBar().setTitle("Order List");
-
-        initRecyclerView();
-    }
-
-    // Initialize Recyclerview
-    private void initRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        OrderListAdapter adapter = new OrderListAdapter(this, createDummyOrders());
-        recyclerView.setAdapter(adapter);
-    }
-
-    // Creating Dummy order list data
-    private ArrayList<Order> createDummyOrders() {
+public class TransactionServices {
+    public static ArrayList<Order> getAllCurrentTransactionFoods(){
         ArrayList<Order> orders = new ArrayList<>();
 
         orders.add(new Order(R.drawable.img_ice_cream, "Ice Cream", "Table 7", "Served"));

@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.restaurantmanagement.Activities.OrderListActivity;
 import com.example.restaurantmanagement.Adapter.MyTableRecyclerViewAdapter;
 import com.example.restaurantmanagement.Enums.TableStatus;
 import com.example.restaurantmanagement.EventListenerInterface.ITableListEventListener;
@@ -168,9 +167,11 @@ public class TableFragment extends Fragment implements ITableListEventListener {
     }
 
     private void goToTableDetail(){
+        OrderedFoodFragment fragment = new OrderedFoodFragment();
 
-        Intent intent = new Intent(context, OrderListActivity.class);
-        intent.putExtra(TABLE_NAME, selectedTable);
-        startActivity(intent);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.main_activity_frame, fragment)
+                .commit();
+
     }
 }
