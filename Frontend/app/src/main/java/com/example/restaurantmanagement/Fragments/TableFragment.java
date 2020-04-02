@@ -114,7 +114,7 @@ public class TableFragment extends Fragment implements ITableListEventListener {
                 isOpened.Subscribe(this::handleOpenTableSuccess, this::handleAPIFailure);
             }
             else
-                goToTableDetail();
+                goToTableDetail(selectedTable);
 
         }catch(Exception ex){
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
@@ -153,7 +153,7 @@ public class TableFragment extends Fragment implements ITableListEventListener {
             Boolean isOpened = response.GetData();
 
             if(isOpened){
-                goToTableDetail();
+                goToTableDetail(selectedTable);
             }
 
         }catch(Exception ex){
@@ -166,8 +166,8 @@ public class TableFragment extends Fragment implements ITableListEventListener {
                 Toast.LENGTH_LONG).show();
     }
 
-    private void goToTableDetail(){
-        OrderedFoodFragment fragment = new OrderedFoodFragment();
+    private void goToTableDetail(String tableName){
+        OrderedFoodFragment fragment = new OrderedFoodFragment(tableName);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_activity_frame, fragment)

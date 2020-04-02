@@ -4,7 +4,8 @@
     android:id="@+id/order_item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:background="@drawable/bg_light_green_convex"
     android:orientation="horizontal"
     android:padding="16dp">
@@ -23,7 +24,7 @@
         android:paddingRight="16dp">
 
         <TextView
-            android:id="@+id/order_menu_item"
+            android:id="@+id/food_name"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"

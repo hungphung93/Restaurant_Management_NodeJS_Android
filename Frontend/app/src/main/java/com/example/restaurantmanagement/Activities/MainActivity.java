@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
                 fragment = new TableFragment();
                 break;
             case R.id.nav_food:
-                fragment = new OrderedFoodFragment();
+                fragment = new OrderedFoodFragment("Table #1");
                 break;
         }
 

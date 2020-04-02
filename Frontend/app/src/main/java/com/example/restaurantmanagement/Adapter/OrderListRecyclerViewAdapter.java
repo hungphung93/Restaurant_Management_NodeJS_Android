@@ -52,7 +52,7 @@ public class OrderListRecyclerViewAdapter extends RecyclerView.Adapter<OrderList
         Glide.with(mContext).asBitmap().load(order.getImage()).into(holder.orderMenuImage);
 
         // set the order menu item name
-        holder.orderMenuItem.setText(order.getOrderMenuItem());
+        holder.foodName.setText(order.getFoodName());
 
         // set the table name
         holder.tableName.setText(order.getTableName());
@@ -85,7 +85,7 @@ public class OrderListRecyclerViewAdapter extends RecyclerView.Adapter<OrderList
 
         View mview;
         CircleImageView orderMenuImage;
-        TextView orderMenuItem;
+        TextView foodName;
         TextView tableName;
         TextView orderStatus;
 
@@ -94,7 +94,7 @@ public class OrderListRecyclerViewAdapter extends RecyclerView.Adapter<OrderList
 
             mview = itemView;
             orderMenuImage = itemView.findViewById(R.id.order_menu_image);
-            orderMenuItem = itemView.findViewById(R.id.order_menu_item);
+            foodName = itemView.findViewById(R.id.food_name);
             tableName = itemView.findViewById(R.id.table_name);
             orderStatus = itemView.findViewById(R.id.order_status);
         }

@@ -1,24 +1,26 @@
 package com.example.restaurantmanagement.Models;
 
 public class Order {
-    private int id;
+    private String id;
     private int image;
-    private String orderMenuItem;
+    private String foodName;
     private String tableName;
     private String orderStatus;
+    private int quantity;
+    private double price;
 
-    public Order(int image, String orderMenuItem, String tableName, String orderStatus) {
+    public Order(int image, String foodName, String tableName, String orderStatus) {
         this.image = image;
-        this.orderMenuItem = orderMenuItem;
+        this.foodName = foodName;
         this.tableName = tableName;
         this.orderStatus = orderStatus;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -30,12 +32,12 @@ public class Order {
         this.image = image;
     }
 
-    public String getOrderMenuItem() {
-        return orderMenuItem;
+    public String getFoodName() {
+        return foodName;
     }
 
-    public void setOrderMenuItem(String orderMenuItem) {
-        this.orderMenuItem = orderMenuItem;
+    public void setOrderMenuItem(String foodName) {
+        this.foodName = foodName;
     }
 
     public String getTableName() {
