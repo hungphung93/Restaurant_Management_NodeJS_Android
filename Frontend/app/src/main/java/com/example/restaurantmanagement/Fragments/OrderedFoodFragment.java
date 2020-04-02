@@ -11,12 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.restaurantmanagement.Adapter.OrderListRecyclerViewAdapter;
 import com.example.restaurantmanagement.EventListenerInterface.IOrderedFoodListEventListener;
+import com.example.restaurantmanagement.Models.ApiResponse;
+import com.example.restaurantmanagement.Models.BaseResponse;
+import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Order;
+import com.example.restaurantmanagement.Models.TableTransactionDetail;
 import com.example.restaurantmanagement.R;
+import com.example.restaurantmanagement.Services.Implementation.TableServices;
 import com.example.restaurantmanagement.Services.Implementation.TransactionServices;
 
 import java.util.ArrayList;
@@ -29,10 +35,14 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     private int mColumnCount = 1;
     private IOrderedFoodListEventListener mListener;
 
+    private String tableName;
     private Context context;
     private ArrayList<Order> ListOrderedFood;
+    private TextView tvAddOrder;
+    private View view;
 
-    public OrderedFoodFragment() {  }
+
+    public OrderedFoodFragment(String tableName) { this.tableName = tableName;  }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,26 +52,39 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        // Will be replaced by calling api
+        // Call API to load ordered foods of the selected table
+        ApiResponse<TableTransactionDetail> transaction = TableServices.getTableDetail(new OpenTableRequest(this.tableName));
+        transaction.Subscribe(this::handleGetTableTransactionSuccess, this::handleAPIFailure);
+
         this.ListOrderedFood = TransactionServices.getAllCurrentTransactionFoods();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_orderedfooditem_list, container, false);
+        view = inflater.inflate(R.layout.fragment_orderedfooditem_list, container, false);
+
+        View lstFoodView = view.findViewById(R.id.list_food);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
+        if (lstFoodView instanceof RecyclerView) {
             context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) lstFoodView;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new OrderListRecyclerViewAdapter(context, this.ListOrderedFood, mListener));
         }
+
+        tvAddOrder = (TextView) view.findViewById(R.id.tvAddOrder);
+        tvAddOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Add order is clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return view;
     }
 
@@ -69,13 +92,6 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }*/
 
         mListener = this;
     }
@@ -89,9 +105,40 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     @Override
     public void onOrderedFoodClick(Order orderedFood) {
         Toast.makeText(context, String.format("%s belong to table %s with status %s is clicked",
-                                                orderedFood.getOrderMenuItem(),
+                                                orderedFood.getFoodName(),
                                                 orderedFood.getTableName(),
                                                 orderedFood.getOrderStatus()), Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    private void handleGetTableTransactionSuccess(BaseResponse<TableTransactionDetail> response){
+        try{
+            if(!response.IsSuccess()){
+                Toast.makeText(context, response.GetMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // set adapter to bind data to UI
+            TableTransactionDetail transaction = response.GetData();
+
+            // Hard code for testing purpose
+            if(tableName.equals("Table #1"))
+                this.ListOrderedFood = TransactionServices.getAllCurrentTransactionFoods();
+            else
+                this.ListOrderedFood = transaction.getOrderedFoods();
+
+            RecyclerView lstFoodView = (RecyclerView) view.findViewById(R.id.list_food);
+            lstFoodView.setAdapter(new OrderListRecyclerViewAdapter(context, this.ListOrderedFood, mListener));
+
+
+
+        }catch(Exception ex){
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void handleAPIFailure(Throwable t){
+        Toast.makeText(context, "Internal error happened. Please try later.",
+                Toast.LENGTH_LONG).show();
     }
 }
