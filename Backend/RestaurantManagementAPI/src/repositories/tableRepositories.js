@@ -2,7 +2,10 @@ import { TableEntity } from '../entities/TableEntity';
 import { TransactionEntity } from '../entities/TransactionEntity';
 import { TransactionStatus } from '../shared/enum/TransactionStatus';
 import { TableStatus } from '../shared/enum/TableStatus';
-import { Transaction } from '../models/Transaction';
+import { OrderedFood } from '../entities/OrderedFood';
+import mongoose from 'mongoose';
+import { FoodStatus } from '../shared/enum/FoodStatus';
+import { transactionCollection } from '../shared/constants/mongoDBEntityNames';
 
 
 export const getAllTables = async () => {
@@ -50,8 +53,32 @@ export const openTable = async (tableName) => {
 
         let transaction = new TransactionEntity();
         transaction.table_name = tableName;
+        transaction.ordered_foods = [];
 
         // Add new transaction
+        await transaction.save();
+
+        return await true;
+
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const addOrderToTable = async (tableName, lstFood) => {
+    try {
+        let lstOrderedFood = lstFood.map((x) => {
+            return new OrderedFood(x.food_id, FoodStatus.ONLINE, x.quantity, x.price);
+        });
+
+        let total_additional_amount = lstFood.reduce((currentAmount, food) => (currentAmount + food.quantity * food.price), 0);
+
+        let transaction = await TransactionEntity.findOne({ table_name: tableName, status: TransactionStatus.PROCESSING });
+
+        transaction.ordered_foods = transaction.ordered_foods.concat(lstOrderedFood);
+
+        transaction.total_amount = transaction.total_amount + total_additional_amount;
+
         await transaction.save();
 
         return await true;
