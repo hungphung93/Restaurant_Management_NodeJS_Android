@@ -2,7 +2,8 @@ import {
     getAllTables,
     createTable,
     getTableDetail,
-    openTable
+    openTable,
+    addFoodstoTable
 } from '../controllers/tableController';
 
 import { loginRequired } from '../controllers/userController';
@@ -45,6 +46,14 @@ const routes = (app) => {
             next();
         }, getTableDetail);
     //}, loginRequired, getTableDetail);
+
+    app.route('/table/addFoodsToTable')
+        .post((req, res, next) => {
+            // middleware
+            console.log(`Request from: ${req.originalUrl}`);
+            console.log(`Request type: ${req.method}`);
+            next();
+        }, addFoodstoTable);
 }
 
 

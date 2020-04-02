@@ -60,3 +60,20 @@ export const openTable = async (req, res) => {
         return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
     }
 }
+
+export const addFoodstoTable = async (req, res) => {
+    try {
+        let data = req.body;
+
+        let tableName = data.tableName;
+        let lstFood = data.listFood;
+
+        let isAdded = await tableServices.addOrderToTable(tableName, lstFood);
+
+        return await res.status(200).send(new HttpResponseResult(true, "", isAdded));
+
+    } catch (err) {
+        logger.error(err);
+        return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
+    }
+}

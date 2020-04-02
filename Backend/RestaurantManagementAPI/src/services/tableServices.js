@@ -34,7 +34,7 @@ export const getTableDetail = async (tableName) => {
         return await new Transaction(tableInfo._id, tableInfo.table_name,
             tableInfo.status,
             tableInfo.open_at,
-            tableInfo.orderedFoods,
+            tableInfo.ordered_foods,
             tableInfo.total_amount);
     } catch (err) {
         throw err;
@@ -46,6 +46,16 @@ export const openTable = async (tableName) => {
         let isOpened = await tableRepositories.openTable(tableName);
 
         return await isOpened;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const addOrderToTable = async (tableName, lstFood) => {
+    try {
+        let isAdded = await tableRepositories.addOrderToTable(tableName, lstFood);
+
+        return await isAdded;
     } catch (err) {
         throw err;
     }
