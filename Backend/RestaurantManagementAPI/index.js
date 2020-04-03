@@ -41,6 +41,7 @@ app.all('*', (req, res, err, next) => {
 
     next();
 });
+app.use('/images', express.static(__dirname + '/images'));
 
 // Register JWT Authentication
 app.use(async (req, res, next) => {
