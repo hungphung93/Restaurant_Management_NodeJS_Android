@@ -3,9 +3,9 @@ package com.example.restaurantmanagement.Models;
 import com.google.gson.annotations.SerializedName;
 
 public class FoodImage {
-    @SerializedName("foodId")
+    @SerializedName("id")
     private String foodId;
-    @SerializedName("image_url")
+    @SerializedName("imageURL")
     private String imageURL;
 
     public String getFoodId() { return this.foodId; }

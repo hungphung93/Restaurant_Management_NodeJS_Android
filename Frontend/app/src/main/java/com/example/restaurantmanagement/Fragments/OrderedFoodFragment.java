@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -18,9 +19,12 @@ import com.example.restaurantmanagement.Adapter.OrderListRecyclerViewAdapter;
 import com.example.restaurantmanagement.EventListenerInterface.IOrderedFoodListEventListener;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
+import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
+import com.example.restaurantmanagement.Models.LoggingUser;
 import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.Models.TableTransactionDetail;
+import com.example.restaurantmanagement.Models.UserInfo;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
 import com.example.restaurantmanagement.Services.Implementation.TransactionServices;
@@ -40,6 +44,7 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     private ArrayList<Order> ListOrderedFood;
     private TextView tvAddOrder;
     private View view;
+    private TableTransactionDetail transaction;
 
 
     public OrderedFoodFragment(String tableName) { this.tableName = tableName;  }
@@ -107,7 +112,7 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
         Toast.makeText(context, String.format("%s belong to table %s with status %s is clicked",
                                                 orderedFood.getFoodName(),
                                                 orderedFood.getTableName(),
-                                                orderedFood.getOrderStatus()), Toast.LENGTH_SHORT)
+                                                orderedFood.getFoodStatus()), Toast.LENGTH_SHORT)
                 .show();
     }
 
@@ -119,22 +124,33 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
             }
 
             // set adapter to bind data to UI
-            TableTransactionDetail transaction = response.GetData();
+            // Refractor later to separate ordered food page from table detail page
+            transaction = response.GetData();
 
-            // Hard code for testing purpose
-            if(tableName.equals("Table #1"))
-                this.ListOrderedFood = TransactionServices.getAllCurrentTransactionFoods();
-            else
-                this.ListOrderedFood = transaction.getOrderedFoods();
-
-            RecyclerView lstFoodView = (RecyclerView) view.findViewById(R.id.list_food);
-            lstFoodView.setAdapter(new OrderListRecyclerViewAdapter(context, this.ListOrderedFood, mListener));
-
-
-
+            ApiResponse<ArrayList<Order>> lstOrderedFoods = TableServices.getAllOrderedFoodByRole(
+                                                                    new GetOrderedFoodRequest(LoggingUser.getUserInfo().GetRole()));
+            lstOrderedFoods.Subscribe(this::handleGetAllOrderedFoodSuccess, this::handleAPIFailure);
         }catch(Exception ex){
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void handleGetAllOrderedFoodSuccess(BaseResponse<ArrayList<Order>> response) {
+        ArrayList<Order> lstAllOrders = response.GetData();
+
+        lstAllOrders.removeIf(x -> !x.getTableName().equals(transaction.getTableName()));
+
+        this.ListOrderedFood = lstAllOrders;
+
+        RecyclerView lstFoodView = (RecyclerView) view.findViewById(R.id.list_food);
+        lstFoodView.setAdapter(new OrderListRecyclerViewAdapter(context, this.ListOrderedFood, mListener));
+
+        /*
+        if(tableName.equals("Table #1"))
+            this.ListOrderedFood = TransactionServices.getAllCurrentTransactionFoods();
+        else
+            this.ListOrderedFood = transaction.getOrderedFoods();
+         */
     }
 
     private void handleAPIFailure(Throwable t){

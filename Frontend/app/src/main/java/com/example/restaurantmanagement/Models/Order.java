@@ -1,43 +1,31 @@
 package com.example.restaurantmanagement.Models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Order {
-    private String id;
-    private int image;
-    private String foodName;
+    @SerializedName("transactionId")
+    private String transactionId;
+    @SerializedName("tableName")
     private String tableName;
-    private String orderStatus;
+    @SerializedName("foodId")
+    private String foodId;
+    @SerializedName("foodName")
+    private String foodName;
+    @SerializedName("imageURL")
+    private String imageURL;
+    @SerializedName("foodStatus")
+    private String foodStatus;
+    @SerializedName("quantity")
     private int quantity;
+    @SerializedName("price")
     private double price;
 
-    public Order(int image, String foodName, String tableName, String orderStatus) {
-        this.image = image;
-        this.foodName = foodName;
-        this.tableName = tableName;
-        this.orderStatus = orderStatus;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public int getImage() {
-        return image;
-    }
-
-    public void setImage(int image) {
-        this.image = image;
-    }
-
-    public String getFoodName() {
-        return foodName;
-    }
-
-    public void setOrderMenuItem(String foodName) {
-        this.foodName = foodName;
+    public void setId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
     public String getTableName() {
@@ -48,11 +36,33 @@ public class Order {
         this.tableName = tableName;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public String getFoodId() {
+        return this.foodId;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setFoodId(String foodId) { this.foodId = foodId; }
+
+    public String getFoodName() { return this.foodName; }
+
+    public void setFoodName(String foodName) { this.foodName = foodName; }
+
+    public String getImageURL() { return this.imageURL; }
+
+    public void setImageURL(String imageURL) { this.imageURL = imageURL; }
+
+    public String getFoodStatus() {
+        return foodStatus;
     }
+
+    public void setFoodStatus(String foodStatus) {
+        this.foodStatus = foodStatus;
+    }
+
+    public int getQuantity() { return this.quantity; }
+
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+
+    public double getPrice() { return this.price; }
+
+    public void setPrice(double price) { this.price = price; }
 }

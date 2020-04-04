@@ -1,6 +1,7 @@
 package com.example.restaurantmanagement.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.restaurantmanagement.EventListenerInterface.IOrderedFoodListEventListener;
 import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.R;
+import com.example.restaurantmanagement.Utilities.HttpHelper;
 
 import java.util.ArrayList;
 
@@ -48,8 +51,20 @@ public class OrderListRecyclerViewAdapter extends RecyclerView.Adapter<OrderList
         // Get the order
         Order order = orders.get(position);
 
+        String url = String.format("%simages/%s", HttpHelper.BASE_URL, order.getImageURL());
+
         // set the image
-        Glide.with(mContext).asBitmap().load(order.getImage()).into(holder.orderMenuImage);
+        Glide.with(mContext)
+                .asBitmap()
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .preload();
+
+        Glide.with(mContext)
+                .asBitmap()
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE) // ALL works here too
+                .into(holder.orderMenuImage);
 
         // set the order menu item name
         holder.foodName.setText(order.getFoodName());
@@ -58,13 +73,13 @@ public class OrderListRecyclerViewAdapter extends RecyclerView.Adapter<OrderList
         holder.tableName.setText(order.getTableName());
 
         // set the order status
-        holder.orderStatus.setText(order.getOrderStatus());
+        holder.orderStatus.setText(order.getFoodStatus());
 
-        if (order.getOrderStatus().equalsIgnoreCase("On Line")) {
+        if (order.getFoodStatus().equalsIgnoreCase("On Line")) {
             holder.orderStatus.setTextColor(mContext.getColor(R.color.darkYellow));
-        } else if (order.getOrderStatus().equalsIgnoreCase("Ready")) {
+        } else if (order.getFoodStatus().equalsIgnoreCase("Ready")) {
             holder.orderStatus.setTextColor(mContext.getColor(R.color.darkGreen));
-        } else if (order.getOrderStatus().equalsIgnoreCase("Cooking")) {
+        } else if (order.getFoodStatus().equalsIgnoreCase("Cooking")) {
             holder.orderStatus.setTextColor(mContext.getColor(R.color.blue));
         }
 
