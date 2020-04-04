@@ -1,7 +1,9 @@
 package com.example.restaurantmanagement.Services.Interface;
 
 import com.example.restaurantmanagement.Models.BaseResponse;
+import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
 import com.example.restaurantmanagement.Models.OpenTableRequest;
+import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.Models.Table;
 import com.example.restaurantmanagement.Models.TableTransactionDetail;
 
@@ -21,4 +23,7 @@ public interface ITableServices {
 
     @POST("table/getTableDetail")
     Observable<BaseResponse<TableTransactionDetail>> getTableDetail(@Body OpenTableRequest req);
+
+    @POST("table/getAllOrderedFoodByRole")
+    Observable<BaseResponse<ArrayList<Order>>> getAllOrderedFoodByRole(@Body GetOrderedFoodRequest req);
 }

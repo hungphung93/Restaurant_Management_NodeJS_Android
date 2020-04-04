@@ -2,6 +2,7 @@ package com.example.restaurantmanagement.Utilities;
 
 import android.os.AsyncTask;
 
+import com.example.restaurantmanagement.Models.LoggingUser;
 import com.example.restaurantmanagement.Models.UserInfo;
 import com.example.restaurantmanagement.Services.Interface.IAuthServices;
 import com.google.gson.Gson;
@@ -21,28 +22,32 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HttpHelper{
     // Trailing slash is needed
-    private static final String BASE_URL = "http://192.168.0.24:3000/";
+    public static final String BASE_URL = "http://192.168.0.19:3000/";
+
     private static Retrofit instance = null;
-
-
 
     public static Retrofit GetInstance(){
         if(instance == null){
-            /*
+/*
             // Http Interceptors to add JWT Authentication
             OkHttpClient client = new OkHttpClient();
 
             client.interceptors().add(new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
+
+                    UserInfo userInfo = LoggingUser.getUserInfo();
+
+                    String accessToken = userInfo.GetAccessToken();
+
                     Request request = chain.request().newBuilder()
-                                            .addHeader("Authorization", "JWT")
+                                            .addHeader("Authorization", String.format("JWT %s", accessToken))
                                             .build();
 
                     return chain.proceed(chain.request());
                 }
             });
-            */
+*/
             instance = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())

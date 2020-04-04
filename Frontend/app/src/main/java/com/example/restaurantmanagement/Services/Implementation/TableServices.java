@@ -2,7 +2,9 @@ package com.example.restaurantmanagement.Services.Implementation;
 
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
+import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
 import com.example.restaurantmanagement.Models.OpenTableRequest;
+import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.Models.Table;
 import com.example.restaurantmanagement.Models.TableTransactionDetail;
 import com.example.restaurantmanagement.Services.Interface.IAuthServices;
@@ -42,6 +44,16 @@ public class TableServices {
 
             return new ApiResponse(tableServices.getTableDetail(req));
 
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
+
+    public static ApiResponse<ArrayList<Order>> getAllOrderedFoodByRole(GetOrderedFoodRequest req){
+        try{
+            ITableServices tableServices = HttpHelper.CreateApiService(ITableServices.class);
+
+            return new ApiResponse(tableServices.getAllOrderedFoodByRole(req));
         }catch(Exception ex){
             throw ex;
         }
