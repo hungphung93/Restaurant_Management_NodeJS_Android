@@ -8,8 +8,8 @@ const routes = (app) => {
     app.route('/food/getAllFoods')
         .post((req, res, next) => {
             // middleware
-            console.log(`Request from: ${req.originalUrl}`)
-            console.log(`Request type: ${req.method}`)
+            console.log(`Request from: ${req.originalUrl}`);
+            console.log(`Request type: ${req.method}`);
             next();
         }, getAllFoods);
     //}, loginRequired, getAllFoods);
@@ -17,13 +17,12 @@ const routes = (app) => {
     app.route('/food/addNewFood')
         .post((req, res, next) => {
             // middleware
-            console.log(`Request from: ${req.originalUrl}`)
-            console.log(`Request type: ${req.method}`)
+            console.log(`Request from: ${req.originalUrl}`);
+            console.log(`Request type: ${req.method}`);
             next();
         }, addNewFood);
     //}, loginRequired, getAllFoods);
 }
-
 
 
 export default routes;
