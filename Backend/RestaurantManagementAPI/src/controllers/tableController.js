@@ -77,3 +77,19 @@ export const addFoodstoTable = async (req, res) => {
         return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
     }
 }
+
+export const getAllOrderedFoodByRole = async (req, res) => {
+    try {
+        let data = req.body;
+
+        let role = data.role;
+
+        let orderedFoods = await tableServices.getAllOrderedFoodByRole(role);
+
+        return await res.status(200).send(new HttpResponseResult(true, "", orderedFoods));
+
+    } catch (err) {
+        logger.error(err);
+        return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
+    }
+}
