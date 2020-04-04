@@ -167,7 +167,7 @@ public class TableFragment extends Fragment implements ITableListEventListener {
     }
 
     private void goToTableDetail(String tableName){
-        OrderedFoodFragment fragment = new OrderedFoodFragment(tableName);
+        TableDetailFragment fragment = new TableDetailFragment(tableName);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_activity_frame, fragment)

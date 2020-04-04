@@ -6,22 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvAddOrder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Order"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:padding="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/bg_btn_success"
-        android:layout_gravity="right"
-        android:gravity="center"/>
-
     <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"

@@ -9,10 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.restaurantmanagement.Adapter.OrderListRecyclerViewAdapter;
@@ -21,13 +19,9 @@ import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
 import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
 import com.example.restaurantmanagement.Models.LoggingUser;
-import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Order;
-import com.example.restaurantmanagement.Models.TableTransactionDetail;
-import com.example.restaurantmanagement.Models.UserInfo;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
-import com.example.restaurantmanagement.Services.Implementation.TransactionServices;
 
 import java.util.ArrayList;
 
@@ -39,15 +33,11 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     private int mColumnCount = 1;
     private IOrderedFoodListEventListener mListener;
 
-    private String tableName;
     private Context context;
     private ArrayList<Order> ListOrderedFood;
-    private TextView tvAddOrder;
     private View view;
-    private TableTransactionDetail transaction;
 
-
-    public OrderedFoodFragment(String tableName) { this.tableName = tableName;  }
+    public OrderedFoodFragment(String tableName) { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,11 +47,9 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        // Call API to load ordered foods of the selected table
-        ApiResponse<TableTransactionDetail> transaction = TableServices.getTableDetail(new OpenTableRequest(this.tableName));
-        transaction.Subscribe(this::handleGetTableTransactionSuccess, this::handleAPIFailure);
-
-        this.ListOrderedFood = TransactionServices.getAllCurrentTransactionFoods();
+        ApiResponse<ArrayList<Order>> lstOrderedFoods = TableServices.getAllOrderedFoodByRole(
+                new GetOrderedFoodRequest(LoggingUser.getUserInfo().GetRole()));
+        lstOrderedFoods.Subscribe(this::handleGetAllOrderedFoodSuccess, this::handleAPIFailure);
     }
 
     @Override
@@ -81,14 +69,6 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
         }
-
-        tvAddOrder = (TextView) view.findViewById(R.id.tvAddOrder);
-        tvAddOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Add order is clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         return view;
     }
@@ -116,41 +96,13 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
                 .show();
     }
 
-    private void handleGetTableTransactionSuccess(BaseResponse<TableTransactionDetail> response){
-        try{
-            if(!response.IsSuccess()){
-                Toast.makeText(context, response.GetMessage(), Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            // set adapter to bind data to UI
-            // Refractor later to separate ordered food page from table detail page
-            transaction = response.GetData();
-
-            ApiResponse<ArrayList<Order>> lstOrderedFoods = TableServices.getAllOrderedFoodByRole(
-                                                                    new GetOrderedFoodRequest(LoggingUser.getUserInfo().GetRole()));
-            lstOrderedFoods.Subscribe(this::handleGetAllOrderedFoodSuccess, this::handleAPIFailure);
-        }catch(Exception ex){
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
     private void handleGetAllOrderedFoodSuccess(BaseResponse<ArrayList<Order>> response) {
         ArrayList<Order> lstAllOrders = response.GetData();
-
-        lstAllOrders.removeIf(x -> !x.getTableName().equals(transaction.getTableName()));
 
         this.ListOrderedFood = lstAllOrders;
 
         RecyclerView lstFoodView = (RecyclerView) view.findViewById(R.id.list_food);
         lstFoodView.setAdapter(new OrderListRecyclerViewAdapter(context, this.ListOrderedFood, mListener));
-
-        /*
-        if(tableName.equals("Table #1"))
-            this.ListOrderedFood = TransactionServices.getAllCurrentTransactionFoods();
-        else
-            this.ListOrderedFood = transaction.getOrderedFoods();
-         */
     }
 
     private void handleAPIFailure(Throwable t){

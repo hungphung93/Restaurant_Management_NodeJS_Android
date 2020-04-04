@@ -1,17 +1,12 @@
 package com.example.restaurantmanagement.Adapter;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -24,27 +19,26 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class OrderListRecyclerViewAdapter extends RecyclerView.Adapter<OrderListRecyclerViewAdapter.ViewHolder> {
+public class MyTableDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyTableDetailRecyclerViewAdapter.ViewHolder> {
 
     private Context mContext;
     private ArrayList<Order> orders;
     private IOrderedFoodListEventListener listener;
 
-    public OrderListRecyclerViewAdapter(Context context, ArrayList<Order> orders, IOrderedFoodListEventListener _listner) {
+    public MyTableDetailRecyclerViewAdapter(Context context, ArrayList<Order> orders, IOrderedFoodListEventListener _listner) {
         this.mContext = context;
         this.orders = orders;
         this.listener = _listner;
     }
 
-    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_orderedfooditem, parent, false);
-        return new ViewHolder(view);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_tabledetail_item, parent, false);
+        return new MyTableDetailRecyclerViewAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         // Get the order
         Order order = orders.get(position);
 
@@ -65,9 +59,6 @@ public class OrderListRecyclerViewAdapter extends RecyclerView.Adapter<OrderList
 
         // set the order menu item name
         holder.foodName.setText(order.getFoodName());
-
-        // set the table name
-        holder.tableName.setText(order.getTableName());
 
         // set the order status
         holder.orderStatus.setText(order.getFoodStatus());
@@ -93,22 +84,19 @@ public class OrderListRecyclerViewAdapter extends RecyclerView.Adapter<OrderList
         return orders.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-
+    public class ViewHolder extends RecyclerView.ViewHolder {
         View mview;
         CircleImageView orderMenuImage;
         TextView foodName;
-        TextView tableName;
         TextView orderStatus;
 
         ViewHolder(View itemView) {
             super(itemView);
 
             mview = itemView;
-            orderMenuImage = itemView.findViewById(R.id.order_menu_image);
-            foodName = itemView.findViewById(R.id.food_name);
-            tableName = itemView.findViewById(R.id.table_name);
-            orderStatus = itemView.findViewById(R.id.order_status);
+            orderMenuImage = itemView.findViewById(R.id.table_food_image);
+            foodName = itemView.findViewById(R.id.table_food_name);
+            orderStatus = itemView.findViewById(R.id.table_order_status);
         }
     }
 }
