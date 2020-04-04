@@ -1,6 +1,7 @@
 import * as tableRepositories from '../repositories/tableRepositories';
 import { Table } from '../models/Table';
 import { Transaction } from '../models/Transaction';
+import { OrderedFoodInfo } from '../models/OrderdFoodInfo';
 
 export const getAllTables = async () => {
     try {
@@ -56,6 +57,38 @@ export const addOrderToTable = async (tableName, lstFood) => {
         let isAdded = await tableRepositories.addOrderToTable(tableName, lstFood);
 
         return await isAdded;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const getAllOrderedFoodByRole = async (role) => {
+    try {
+        let orderedFoods = await tableRepositories.getAllOrderedFoodByRole(role);
+
+        let orderedFoodInfo = [];
+
+        // Mapping two array entities to add food information to transaction 
+
+        // Firstly, loop over all transaction to select all ordered Food
+        // Then use the foodId to map food information
+        orderedFoods.orderedFoods.map((transaction) => {
+            transaction.ordered_foods.map((orderedFood) => {
+                let orderedFoodId = orderedFood.food_id;
+
+                let foodInfoEntity = orderedFoods.foodInfo.filter((food) => {
+                    return food._id == orderedFoodId;
+                }).map((x) => { return { foodId: x._id, foodName: x.name, imageURL: x.image_url } })[0];
+
+                let foodInfo = new OrderedFoodInfo(transaction._id, transaction.table_name, orderedFoodId,
+                    foodInfoEntity.foodName, foodInfoEntity.imageURL, orderedFood.status,
+                    orderedFood.quantity, orderedFood.price);
+
+                orderedFoodInfo.push(foodInfo);
+            });
+        });
+
+        return await orderedFoodInfo;
     } catch (err) {
         throw err;
     }
