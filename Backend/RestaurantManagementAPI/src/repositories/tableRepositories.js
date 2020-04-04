@@ -6,6 +6,7 @@ import { OrderedFood } from '../entities/OrderedFood';
 import mongoose from 'mongoose';
 import { FoodStatus } from '../shared/enum/FoodStatus';
 import { transactionCollection } from '../shared/constants/mongoDBEntityNames';
+import { FoodEntity } from '../entities/FoodEntity';
 
 
 export const getAllTables = async () => {
@@ -83,6 +84,26 @@ export const addOrderToTable = async (tableName, lstFood) => {
 
         return await true;
 
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const getAllOrderedFoodByRole = async (role) => {
+    try {
+        let orderedFoods = await TransactionEntity.find({ status: TransactionStatus.PROCESSING }).select('table_name ordered_foods');
+
+        let lstFoodIds = [];
+
+        orderedFoods.map((transaction) => {
+            transaction.ordered_foods.map((food) => {
+                lstFoodIds.push(food.food_id);
+            });
+        });
+
+        let foodInfo = await FoodEntity.find({ _id: { $in: lstFoodIds } }).select('name image_url');
+
+        return await { orderedFoods: orderedFoods, foodInfo: foodInfo };
     } catch (err) {
         throw err;
     }
