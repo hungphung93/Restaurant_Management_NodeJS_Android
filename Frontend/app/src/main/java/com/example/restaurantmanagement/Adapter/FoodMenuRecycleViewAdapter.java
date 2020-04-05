@@ -16,107 +16,78 @@
 package com.example.restaurantmanagement.Adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.restaurantmanagement.EventListenerInterface.ITableOrderEventListener;
 import com.example.restaurantmanagement.Models.FoodItem;
 import com.example.restaurantmanagement.R;
 
 import java.util.ArrayList;
 
-
 /**
- *Recycle view adapter for list for ordered items
+ * Recycle view for list of items in menu
  */
+public class FoodMenuRecycleViewAdapter extends RecyclerView.Adapter<FoodMenuRecycleViewAdapter.NumberViewHolder> {
 
-public class RecycleViewReceiptAdapter extends RecyclerView.Adapter<RecycleViewReceiptAdapter.NumberViewHolder> {
-
-    private static final String TAG = RecycleViewReceiptAdapter.class.getSimpleName();
+    private static final String TAG = FoodMenuRecycleViewAdapter.class.getSimpleName();
 
 
 
     private ArrayList<FoodItem> foodItems;
     int mNumberItems;
 
-    TextView subtotalView;
-    TextView HSTView;
-    TextView totalView;
+    private Context context;
+    final private ITableOrderEventListener mOnClickListener;
 
-    public RecycleViewReceiptAdapter(ArrayList<FoodItem> fooditems,TextView subtotalView,TextView HSTView,TextView totalView) {
+    public FoodMenuRecycleViewAdapter(ArrayList<FoodItem> fooditems, ITableOrderEventListener listener) {
         mNumberItems = fooditems.size();
         this.foodItems = fooditems;
-        this.totalView = totalView;
-        this.subtotalView = subtotalView;
-        this.HSTView = HSTView;
+        this.mOnClickListener = listener;
     }
 
 
     @Override
     public NumberViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.receipt_item;
+        context = viewGroup.getContext();
+        int layoutIdForListItem = R.layout.food_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         NumberViewHolder viewHolder = new NumberViewHolder(view);
-
-
         return viewHolder;
     }
 
 
     @Override
     public void onBindViewHolder(NumberViewHolder holder, int position) {
-        Log.d(TAG, "#" + position);
         holder.bind(position);
     }
 
 
     @Override
     public int getItemCount() {
-        return foodItems.size();
+        return mNumberItems;
     }
 
-    public void updateReceiptsList(FoodItem newItem) {
 
+    class NumberViewHolder extends RecyclerView.ViewHolder  implements OnClickListener {
 
-        foodItems.add(newItem);
-        mNumberItems = foodItems.size();
-        double subtotal = 0;
-        for (FoodItem food:foodItems) {
-
-            System.out.println("food name" +food.getName());
-            subtotal += food.getPrice();
-        }
-        this.notifyDataSetChanged();
-
-
-        //Also update the receipt total and price
-
-
-        subtotalView.setText("$"+ subtotal);
-        double hst = subtotal*13/100;
-        HSTView.setText("$"+hst);
-        totalView.setText("$"+(subtotal+hst));
-    }
-
-    class NumberViewHolder extends RecyclerView.ViewHolder {
         TextView food_item;
-        TextView food_item_price;
 
 
 
         public NumberViewHolder(View itemView) {
             super(itemView);
 
-            food_item = (TextView) itemView.findViewById(R.id.food_item_name);
-            food_item_price = (TextView) itemView.findViewById(R.id.food_item_price);
+            food_item = (TextView) itemView.findViewById(R.id.food_item);
+            itemView.setOnClickListener(this);
 
         }
 
@@ -124,8 +95,19 @@ public class RecycleViewReceiptAdapter extends RecyclerView.Adapter<RecycleViewR
         void bind(int listIndex) {
             for(int i =0;i<=listIndex;i++) {
                 food_item.setText(foodItems.get(i).getName());
-                food_item_price.setText(String.valueOf(foodItems.get(i).getPrice()));
             }
+
+            //just to display the color in list of odd items in alternative order
+            //if(listIndex % 2 != 0) {
+              //  this.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListRowSeparator));
+            //}
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onMenuFoodClick(clickedPosition);
         }
     }
 }

@@ -9,5 +9,7 @@
     <color name="darkYellow">#FF9800</color>
     <color name="darkGreen">#018001</color>
     <color name="blue">#0000FF</color>
+    <color name="background">#E1EFDE</color>
+    <color name="button">#6EB943</color>
 
 </resources>

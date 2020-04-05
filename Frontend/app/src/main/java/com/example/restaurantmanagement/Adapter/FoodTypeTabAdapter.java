@@ -4,33 +4,36 @@ import android.content.Context;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.restaurantmanagement.EventListenerInterface.IFooItemTypeTabEventListener;
 import com.example.restaurantmanagement.Fragments.FoodListFragment;
 import com.example.restaurantmanagement.Models.FoodItem;
 
 import java.util.ArrayList;
 
-public class TabAdapter extends FragmentPagerAdapter {
+public class FoodTypeTabAdapter extends FragmentStatePagerAdapter {
 
     private Context myContext;
     int totalTabs;
     ArrayList foodLists;
     String[] itemTypes;
+    IFooItemTypeTabEventListener listener;
 
-    public TabAdapter(Context context, FragmentManager fm, int totalTabs, ArrayList<FoodItem> foodLists, String[] itemTypes) {
+    public FoodTypeTabAdapter(IFooItemTypeTabEventListener listener, Context context, FragmentManager fm, int totalTabs, ArrayList<FoodItem> foodLists, String[] itemTypes) {
         super(fm);
         myContext = context;
         this.totalTabs = totalTabs;
         this.foodLists = foodLists;
         this.itemTypes = itemTypes;
+        this.listener = listener;
     }
 
     // this is for fragment tabs
     @Override
     public Fragment getItem(int position) {
 
-                FoodListFragment foodList = new FoodListFragment(position,foodLists,itemTypes);
+                FoodListFragment foodList = new FoodListFragment(listener, position,foodLists,itemTypes);
                 return foodList;
 
 

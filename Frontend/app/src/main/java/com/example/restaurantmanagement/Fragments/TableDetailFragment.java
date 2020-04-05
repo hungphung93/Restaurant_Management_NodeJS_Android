@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.restaurantmanagement.Adapter.MyTableDetailRecyclerViewAdapter;
 import com.example.restaurantmanagement.EventListenerInterface.IOrderedFoodListEventListener;
+import com.example.restaurantmanagement.Fragments.tableOrder.TableOrderFragment;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
 import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
@@ -85,7 +86,12 @@ public class TableDetailFragment extends Fragment implements IOrderedFoodListEve
         tvAddOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Add order is clicked", Toast.LENGTH_SHORT).show();
+
+                TableOrderFragment fragment = new TableOrderFragment(tableName);
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_activity_frame, fragment)
+                        .commit();
             }
         });
 
@@ -148,5 +154,6 @@ public class TableDetailFragment extends Fragment implements IOrderedFoodListEve
                 orderedFood.getTableName(),
                 orderedFood.getFoodStatus()), Toast.LENGTH_SHORT)
                 .show();
+
     }
 }
