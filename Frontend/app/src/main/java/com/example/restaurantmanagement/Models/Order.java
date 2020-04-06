@@ -7,6 +7,8 @@ public class Order {
     private String transactionId;
     @SerializedName("tableName")
     private String tableName;
+    @SerializedName("orderId")
+    private String orderId;
     @SerializedName("foodId")
     private String foodId;
     @SerializedName("foodName")
@@ -35,6 +37,10 @@ public class Order {
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
+
+    public String getOrderId() { return this.orderId; }
+
+    public void setOrderId(String orderId) { this.orderId = orderId; }
 
     public String getFoodId() {
         return this.foodId;

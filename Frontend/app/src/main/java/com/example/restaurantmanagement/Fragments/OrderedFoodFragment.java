@@ -17,8 +17,10 @@ import com.example.restaurantmanagement.Adapter.OrderListRecyclerViewAdapter;
 import com.example.restaurantmanagement.EventListenerInterface.IOrderedFoodListEventListener;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
+import com.example.restaurantmanagement.Models.ChangeStatusOfOrderRequest;
 import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
 import com.example.restaurantmanagement.Models.LoggingUser;
+import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
@@ -36,8 +38,9 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     private Context context;
     private ArrayList<Order> ListOrderedFood;
     private View view;
+    private OrderListRecyclerViewAdapter adapter;
 
-    public OrderedFoodFragment(String tableName) { }
+    public OrderedFoodFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,24 +92,42 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
 
     @Override
     public void onOrderedFoodClick(Order orderedFood) {
-        Toast.makeText(context, String.format("%s belong to table %s with status %s is clicked",
-                                                orderedFood.getFoodName(),
-                                                orderedFood.getTableName(),
-                                                orderedFood.getFoodStatus()), Toast.LENGTH_SHORT)
-                .show();
+
+        ApiResponse<Boolean> isUpdated = TableServices.changeStatusOfOrder(new ChangeStatusOfOrderRequest(orderedFood.getTransactionId(),
+                                                                                                          orderedFood.getOrderId(),
+                                                                                                          orderedFood.getFoodStatus()));
+        isUpdated.Subscribe(this::handleChangeOrderStatusSuccess, this::handleAPIFailure);
+    }
+
+    private void handleChangeOrderStatusSuccess(BaseResponse response) {
+        if(!response.IsSuccess()){
+            Toast.makeText(context, response.GetMessage(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // After update status successfully, reload the list
+        ApiResponse<ArrayList<Order>> lstOrderedFoods = TableServices.getAllOrderedFoodByRole(
+                new GetOrderedFoodRequest(LoggingUser.getUserInfo().GetRole()));
+        lstOrderedFoods.Subscribe(this::handleGetAllOrderedFoodSuccess, this::handleAPIFailure);
     }
 
     private void handleGetAllOrderedFoodSuccess(BaseResponse<ArrayList<Order>> response) {
+        if(!response.IsSuccess()){
+            Toast.makeText(context, response.GetMessage(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ArrayList<Order> lstAllOrders = response.GetData();
 
         this.ListOrderedFood = lstAllOrders;
 
         RecyclerView lstFoodView = (RecyclerView) view.findViewById(R.id.list_food);
+
         lstFoodView.setAdapter(new OrderListRecyclerViewAdapter(context, this.ListOrderedFood, mListener));
     }
 
     private void handleAPIFailure(Throwable t){
-        Toast.makeText(context, "Internal error happened. Please try later.",
+        Toast.makeText(context, "Internal error happened. Pccclease try later.",
                 Toast.LENGTH_LONG).show();
     }
 }

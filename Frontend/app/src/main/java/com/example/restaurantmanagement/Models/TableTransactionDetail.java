@@ -16,6 +16,8 @@ public class TableTransactionDetail {
     private Date openAt;
     @SerializedName("orderedFoods")
     private ArrayList<Order> orderedFoods;
+    @SerializedName("totalAmount")
+    private double totalAmount;
 
 
     public String getTransactionId(){ return this.transactionId; }
@@ -37,4 +39,8 @@ public class TableTransactionDetail {
     public ArrayList<Order> getOrderedFoods() { return this.orderedFoods; }
 
     public void setOrderedFoods(ArrayList<Order> orderedFoods){ this.orderedFoods = orderedFoods; }
+
+    public double getTotalAmount() { return this.totalAmount; }
+
+    public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }
 }

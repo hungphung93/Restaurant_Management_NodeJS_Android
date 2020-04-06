@@ -2,6 +2,7 @@ package com.example.restaurantmanagement.Services.Interface;
 
 import com.example.restaurantmanagement.Models.AddOrderToTableRequest;
 import com.example.restaurantmanagement.Models.BaseResponse;
+import com.example.restaurantmanagement.Models.ChangeStatusOfOrderRequest;
 import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
 import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Order;
@@ -31,4 +32,6 @@ public interface ITableServices {
     @POST("/table/addFoodsToTable")
     Observable<BaseResponse<Boolean>> addFoodsToTable(@Body AddOrderToTableRequest req);
 
+    @POST("/table/changeStatusOfOrder")
+    Observable<BaseResponse<Boolean>> changeStatusOfOrder(@Body ChangeStatusOfOrderRequest req);
 }

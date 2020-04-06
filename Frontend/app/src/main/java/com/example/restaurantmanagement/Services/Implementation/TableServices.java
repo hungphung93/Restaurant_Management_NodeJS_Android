@@ -3,6 +3,7 @@ package com.example.restaurantmanagement.Services.Implementation;
 import com.example.restaurantmanagement.Models.AddOrderToTableRequest;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
+import com.example.restaurantmanagement.Models.ChangeStatusOfOrderRequest;
 import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
 import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Order;
@@ -65,6 +66,17 @@ public class TableServices {
             ITableServices tableServices = HttpHelper.CreateApiService(ITableServices.class);
 
             return new ApiResponse(tableServices.addFoodsToTable(req));
+        }
+        catch(Exception ex){
+            throw ex;
+        }
+    }
+
+    public static ApiResponse<Boolean> changeStatusOfOrder(ChangeStatusOfOrderRequest req){
+        try{
+            ITableServices tableServices = HttpHelper.CreateApiService(ITableServices.class);
+
+            return new ApiResponse(tableServices.changeStatusOfOrder(req));
         }
         catch(Exception ex){
             throw ex;

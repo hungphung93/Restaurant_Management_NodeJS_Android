@@ -120,27 +120,18 @@ public class TableDetailFragment extends Fragment implements IOrderedFoodListEve
             }
 
             // set adapter to bind data to UI
-            // Refractor later to separate ordered food page from table detail page
             transaction = response.GetData();
 
-            ApiResponse<ArrayList<Order>> lstOrderedFoods = TableServices.getAllOrderedFoodByRole(
-                    new GetOrderedFoodRequest(LoggingUser.getUserInfo().GetRole()));
-            lstOrderedFoods.Subscribe(this::handleGetAllOrderedFoodSuccess, this::handleAPIFailure);
+            this.ListOrderedFood = transaction.getOrderedFoods();
+
+            RecyclerView lstFoodView = (RecyclerView) view.findViewById(R.id.table_list_food);
+            lstFoodView.setAdapter(new MyTableDetailRecyclerViewAdapter(context, this.ListOrderedFood, mListener));
+
         }catch(Exception ex){
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
-    private void handleGetAllOrderedFoodSuccess(BaseResponse<ArrayList<Order>> response) {
-        ArrayList<Order> lstAllOrders = response.GetData();
-
-        lstAllOrders.removeIf(x -> !x.getTableName().equals(transaction.getTableName()));
-
-        this.ListOrderedFood = lstAllOrders;
-
-        RecyclerView lstFoodView = (RecyclerView) view.findViewById(R.id.table_list_food);
-        lstFoodView.setAdapter(new MyTableDetailRecyclerViewAdapter(context, this.ListOrderedFood, mListener));
-    }
 
     private void handleAPIFailure(Throwable t){
         Toast.makeText(context, "Internal error happened. Please try later.",
