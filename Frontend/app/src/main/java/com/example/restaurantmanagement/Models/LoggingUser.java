@@ -13,4 +13,8 @@ public class LoggingUser {
     public static void setUserInfo(UserInfo info){
         userInfo = info;
     }
+
+    public static void logout(){
+        userInfo = null;
+    }
 }

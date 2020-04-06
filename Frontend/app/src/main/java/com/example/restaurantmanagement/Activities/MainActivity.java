@@ -10,15 +10,18 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.restaurantmanagement.Enums.Role;
 import com.example.restaurantmanagement.Enums.TableStatus;
 import com.example.restaurantmanagement.EventListenerInterface.ITableListEventListener;
 import com.example.restaurantmanagement.Fragments.OrderedFoodFragment;
 import com.example.restaurantmanagement.Fragments.TableFragment;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
+import com.example.restaurantmanagement.Models.LoggingUser;
 import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Table;
 import com.example.restaurantmanagement.R;
@@ -51,10 +54,15 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
             toggle.syncState();
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_activity_frame, new TableFragment())
+                    .replace(R.id.main_activity_frame, new OrderedFoodFragment())
                     .commit();
 
-            navigationView.setCheckedItem(R.id.nav_table);
+            navigationView.setCheckedItem(R.id.nav_food);
+
+            Menu menu = navigationView.getMenu();
+
+            if(LoggingUser.getUserInfo().GetRole().equals(Role.Cook))
+                menu.findItem(R.id.nav_table).setVisible(false);
         }
         catch(Exception ex){
             Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_LONG).show();
@@ -81,14 +89,16 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
         Fragment fragment = new Fragment();
 
         switch(menuItem.getItemId()){
-            case R.id.nav_menu:
-                fragment = new TableFragment();
-                break;
             case R.id.nav_table:
                 fragment = new TableFragment();
                 break;
             case R.id.nav_food:
-                fragment = new OrderedFoodFragment("Table #1");
+                fragment = new OrderedFoodFragment();
+                break;
+            case R.id.nav_logout:
+                LoggingUser.logout();
+                Intent intent =  new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
                 break;
         }
 
