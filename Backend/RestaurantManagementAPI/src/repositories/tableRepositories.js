@@ -3,9 +3,9 @@ import { TransactionEntity } from '../entities/TransactionEntity';
 import { TransactionStatus } from '../shared/enum/TransactionStatus';
 import { TableStatus } from '../shared/enum/TableStatus';
 import { OrderedFood } from '../entities/OrderedFood';
-import mongoose from 'mongoose';
+import mongoose, { Types, mongo } from 'mongoose';
 import { FoodStatus } from '../shared/enum/FoodStatus';
-import { transactionCollection } from '../shared/constants/mongoDBEntityNames';
+import { transactionCollection, orderedFoodCollection } from '../shared/constants/mongoDBEntityNames';
 import { FoodEntity } from '../entities/FoodEntity';
 
 
@@ -36,7 +36,17 @@ export const getTableDetail = async (tableName) => {
     try {
         let transaction = await TransactionEntity.findOne({ table_name: tableName, status: TransactionStatus.PROCESSING });
 
-        return await transaction;
+        let lstFoodIds = [];
+
+        if (transaction != null) {
+            transaction.ordered_foods.map((food) => {
+                lstFoodIds.push(food.food_id);
+            });
+        }
+
+        let foodInfo = await FoodEntity.find({ _id: { $in: lstFoodIds } }).select('name image_url');
+
+        return await { transaction: transaction, foodInfo: foodInfo };
     } catch (err) {
         throw err;
     }
@@ -68,8 +78,12 @@ export const openTable = async (tableName) => {
 
 export const addOrderToTable = async (tableName, lstFood) => {
     try {
+        let cur = new Date();
+
+        let orderId = new mongoose.Types.ObjectId();
+
         let lstOrderedFood = lstFood.map((x) => {
-            return new OrderedFood(x.food_id, FoodStatus.ONLINE, x.quantity, x.price);
+            return new OrderedFood(orderId, x.food_id, FoodStatus.ONLINE, x.quantity, x.price, cur);
         });
 
         let total_additional_amount = lstFood.reduce((currentAmount, food) => (currentAmount + food.quantity * food.price), 0);
@@ -108,3 +122,35 @@ export const getAllOrderedFoodByRole = async (role) => {
         throw err;
     }
 }
+
+export const changeStatusOfOrder = async (transactionId, orderId, status) => {
+    try {
+
+        let transaction = await TransactionEntity.findOne(
+            {
+                _id: transactionId,
+                "ordered_foods.order_id": new mongoose.Types.ObjectId(orderId)
+            });
+
+        if (transaction == null)
+            return await (false);
+
+        transaction.ordered_foods.forEach(order => {
+            if (order.order_id == orderId) {
+                order.status = status;
+                order.updated_at = new Date();
+            }
+        });
+
+        console.log(transaction.ordered_foods);
+
+        transaction.markModified("ordered_foods");
+
+        await transaction.save();
+
+        return await (true);
+
+    } catch (err) {
+        throw err;
+    }
+} 

@@ -93,3 +93,21 @@ export const getAllOrderedFoodByRole = async (req, res) => {
         return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
     }
 }
+
+export const changeStatusOfOrder = async (req, res) => {
+    try {
+        let data = req.body;
+
+        let transactionId = data.transactionId;
+        let orderId = data.orderId;
+        let status = data.status;
+
+        let isUpdated = await tableServices.changeStatusOfOrder(transactionId, orderId, status);
+
+        return await res.status(200).send(new HttpResponseResult(true, "", isUpdated));
+
+    } catch (err) {
+        logger.error(err);
+        return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
+    }
+}

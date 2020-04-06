@@ -4,7 +4,8 @@ import {
     getTableDetail,
     openTable,
     addFoodstoTable,
-    getAllOrderedFoodByRole
+    getAllOrderedFoodByRole,
+    changeStatusOfOrder
 } from '../controllers/tableController';
 
 import { loginRequired } from '../controllers/userController';
@@ -64,7 +65,14 @@ const routes = (app) => {
             console.log(`Request type: ${req.method}`);
             next();
         }, getAllOrderedFoodByRole);
-}
 
+    app.route('/table/changeStatusOfOrder')
+        .post((req, res, next) => {
+            // middleware
+            console.log(`Request from: ${req.originalUrl}`);
+            console.log(`Request type: ${req.method}`);
+            next();
+        }, changeStatusOfOrder);
+}
 
 export default routes;
