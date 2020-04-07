@@ -78,8 +78,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Login"
+                android:textSize="20dp"
                 android:textColor="@color/colorWhite"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/bg_btn_success"
                 android:onClick="login"/>
 
         </LinearLayout>

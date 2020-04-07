@@ -19,8 +19,6 @@ import com.example.restaurantmanagement.EventListenerInterface.IOrderedFoodListE
 import com.example.restaurantmanagement.Fragments.tableOrder.TableOrderFragment;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
-import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
-import com.example.restaurantmanagement.Models.LoggingUser;
 import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.Models.TableTransactionDetail;
@@ -42,6 +40,7 @@ public class TableDetailFragment extends Fragment implements IOrderedFoodListEve
     private Context context;
     private ArrayList<Order> ListOrderedFood;
     private TextView tvAddOrder;
+    private TextView tvCashOut;
     private View view;
     private TableTransactionDetail transaction;
     /**
@@ -88,6 +87,18 @@ public class TableDetailFragment extends Fragment implements IOrderedFoodListEve
             public void onClick(View v) {
 
                 TableOrderFragment fragment = new TableOrderFragment(tableName);
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_activity_frame, fragment)
+                        .commit();
+            }
+        });
+
+        tvCashOut = (TextView) view.findViewById(R.id.tvCashOut);
+        tvCashOut.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                TableCashOutFragment fragment = new TableCashOutFragment(tableName);
 
                 getFragmentManager().beginTransaction()
                         .replace(R.id.main_activity_frame, fragment)

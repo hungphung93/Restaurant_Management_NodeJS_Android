@@ -80,9 +80,10 @@ export const addOrderToTable = async (tableName, lstFood) => {
     try {
         let cur = new Date();
 
-        let orderId = new mongoose.Types.ObjectId();
+        
 
         let lstOrderedFood = lstFood.map((x) => {
+	    let orderId = new mongoose.Types.ObjectId();
             return new OrderedFood(orderId, x.food_id, FoodStatus.ONLINE, x.quantity, x.price, cur);
         });
 

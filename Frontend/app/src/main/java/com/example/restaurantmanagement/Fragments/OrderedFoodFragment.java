@@ -14,13 +14,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.restaurantmanagement.Adapter.OrderListRecyclerViewAdapter;
+import com.example.restaurantmanagement.Enums.OrderStatus;
+import com.example.restaurantmanagement.Enums.Role;
 import com.example.restaurantmanagement.EventListenerInterface.IOrderedFoodListEventListener;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
 import com.example.restaurantmanagement.Models.ChangeStatusOfOrderRequest;
 import com.example.restaurantmanagement.Models.GetOrderedFoodRequest;
 import com.example.restaurantmanagement.Models.LoggingUser;
-import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
@@ -92,11 +93,31 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
 
     @Override
     public void onOrderedFoodClick(Order orderedFood) {
+        if(isValidToChangeOrderStatus(orderedFood)){
+            ApiResponse<Boolean> isUpdated = TableServices.changeStatusOfOrder(new ChangeStatusOfOrderRequest(orderedFood.getTransactionId(),
+                    orderedFood.getOrderId(),
+                    orderedFood.getFoodStatus()));
+            isUpdated.Subscribe(this::handleChangeOrderStatusSuccess, this::handleAPIFailure);
+        }else
+            Toast.makeText(context, String.format("You are not able to change status of %s order", orderedFood.getFoodStatus()), Toast.LENGTH_SHORT).show();
+    }
 
-        ApiResponse<Boolean> isUpdated = TableServices.changeStatusOfOrder(new ChangeStatusOfOrderRequest(orderedFood.getTransactionId(),
-                                                                                                          orderedFood.getOrderId(),
-                                                                                                          orderedFood.getFoodStatus()));
-        isUpdated.Subscribe(this::handleChangeOrderStatusSuccess, this::handleAPIFailure);
+    private boolean isValidToChangeOrderStatus(Order order){
+
+        String a = LoggingUser.getUserInfo().GetRole();
+        if(a.equals(Role.Waiter.toString())){
+            int tmp = 1;
+        }
+
+        if(LoggingUser.getUserInfo().GetRole().equals(Role.Waiter.toString()) &&
+                (order.getFoodStatus().equals(OrderStatus.ONLINE.toString()) || order.getFoodStatus().equals(OrderStatus.COOKING.toString())))
+            return false;
+
+        if(LoggingUser.getUserInfo().GetRole().equals(Role.Cook.toString()) &&
+                (order.getFoodStatus().equals(OrderStatus.READY.toString()) || order.getFoodStatus().equals(OrderStatus.SERVED.toString())))
+            return false;
+
+        return true;
     }
 
     private void handleChangeOrderStatusSuccess(BaseResponse response) {

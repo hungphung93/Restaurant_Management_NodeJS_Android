@@ -14,16 +14,16 @@ public class UserInfo{
     @SerializedName("accessToken")
     private String accessToken;
     @SerializedName("role")
-    private String sRole;
+    private String role;
 
     public UserInfo(){}
 
-    public UserInfo(String userId, String username, String displayName, String accessToken, Role role){
+    public UserInfo(String userId, String username, String displayName, String accessToken, String role){
         this.userId = userId;
         this.username = username;
         //this.displayName = displayName;
         this.accessToken = accessToken;
-        this.sRole = role.toString();
+        this.role = role;
     }
 
     public String GetUserId(){
@@ -59,11 +59,11 @@ public class UserInfo{
         this.accessToken = accessToken;
     }
 
-    public Role GetRole(){
-        return Role.valueOf(this.sRole);
+    public String GetRole(){
+        return role;
     }
 
-    public void SetRole(Role role){
-        this.sRole = role.toString();
+    public void SetRole(String role){
+        this.role = role;
     }
 }

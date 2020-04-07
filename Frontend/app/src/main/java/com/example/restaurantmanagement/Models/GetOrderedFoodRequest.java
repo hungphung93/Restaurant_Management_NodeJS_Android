@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class GetOrderedFoodRequest {
     @SerializedName("role")
-    private Role role;
+    private String role;
 
-    public GetOrderedFoodRequest(Role role){
+    public GetOrderedFoodRequest(String role){
         this.role = role;
     }
 
-    public Role getRole(){
+    public String getRole(){
         return this.role;
     }
 }
