@@ -76,14 +76,61 @@ export const openTable = async (tableName) => {
     }
 }
 
+export const cancelAllPendingOrder = async (tableName) => {
+    try {
+        let transaction = await TransactionEntity.find({ tableName: tableName, status: TransactionStatus.PROCESSING });
+
+        if (transaction == null) {
+            return await (false);
+        }
+
+        transaction.ordered_foods.forEach(order => {
+            if (order.status != FoodStatus.SERVED) {
+                order.status = FoodStatus.CANCELED;
+                order.updated_at = new Date();
+            }
+        });
+
+        transaction.status = TransactionStatus.COMPLETED;
+
+        // Update transaction
+        transaction.markModified("status");
+        transaction.markModified("ordered_foods");
+        await transaction.save();
+
+        return await true;
+
+    } catch (err) {
+        throw err;
+    }
+}
+
+export const closeTable = async (tableName) => {
+    try {
+        // Update table status
+        let table = await TableEntity.find({ tableName: tableName });
+
+        if (table == null)
+            return await false;
+
+        table.status = TableStatus.EMPTY;
+
+        await table.save();
+
+        return await true;
+
+    }
+    catch (err) {
+        throw err;
+    }
+}
+
 export const addOrderToTable = async (tableName, lstFood) => {
     try {
         let cur = new Date();
 
-        
-
         let lstOrderedFood = lstFood.map((x) => {
-	    let orderId = new mongoose.Types.ObjectId();
+            let orderId = new mongoose.Types.ObjectId();
             return new OrderedFood(orderId, x.food_id, FoodStatus.ONLINE, x.quantity, x.price, cur);
         });
 
@@ -143,7 +190,6 @@ export const changeStatusOfOrder = async (transactionId, orderId, status) => {
             }
         });
 
-        console.log(transaction.ordered_foods);
 
         transaction.markModified("ordered_foods");
 
@@ -154,4 +200,4 @@ export const changeStatusOfOrder = async (transactionId, orderId, status) => {
     } catch (err) {
         throw err;
     }
-} 
+}

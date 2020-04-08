@@ -46,6 +46,21 @@ export const getTableDetail = async (req, res) => {
     }
 }
 
+export const getOrderSummary = async (req, res) => {
+    try {
+        let data = req.body;
+        let tableName = data.tableName;
+
+        let tableOrderSummary = await tableServices.getOrderSummary(tableName);
+
+        return await res.status(200).send(new HttpResponseResult(true, "", tableOrderSummary));
+
+    } catch (err) {
+        logger.error(err);
+        return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
+    }
+}
+
 export const openTable = async (req, res) => {
     try {
         let data = req.body;
@@ -54,6 +69,21 @@ export const openTable = async (req, res) => {
         let isOpened = await tableServices.openTable(tableName);
 
         return await res.status(200).send(new HttpResponseResult(true, "", isOpened));
+
+    } catch (err) {
+        logger.error(err);
+        return await res.status(err.code | 400).send(new HttpResponseResult(false, err, null));
+    }
+}
+
+export const closeTable = async (req, res) => {
+    try {
+        let data = req.body;
+        let tableName = data.tableName;
+
+        let isTableClosed = await tableServices.closeTable(tableName);
+
+        return await res.status(200).send(new HttpResponseResult(true, "", isTableClosed));
 
     } catch (err) {
         logger.error(err);

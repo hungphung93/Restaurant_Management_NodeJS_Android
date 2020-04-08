@@ -86,6 +86,37 @@ export const getTableDetail = async (tableName) => {
   }
 };
 
+export const getOrderSummary = async (tableName) => {
+  let transactionInfo = await getTableDetail(tableName);
+
+  let orderedFoods = transactionInfo.orderedFoods;
+
+  transactionInfo.orderedFoods = [];
+
+  let groupedOrderFoods = [];
+
+  orderedFoods.forEach(order => {
+    // If this is a new order (unique order), then simply add to the group
+    if (groupedOrderFoods[order.foodId] == undefined) {
+      groupedOrderFoods[order.foodId] = order;
+    }
+    // Otherwise, find the added group and update the quantity
+    else {
+      let groupedOrder = groupedOrderFoods[order.foodId];
+
+      groupedOrder.quantity += order.quantity;
+
+      groupedOrderFoods[order.foodId] = groupedOrder;
+    }
+  });
+
+  for (var foodId in groupedOrderFoods) {
+    transactionInfo.orderedFoods.push(groupedOrderFoods[foodId]);
+  }
+
+  return await transactionInfo;
+}
+
 export const openTable = async (tableName) => {
   try {
     let isOpened = await tableRepositories.openTable(tableName);
@@ -95,6 +126,25 @@ export const openTable = async (tableName) => {
     throw err;
   }
 };
+
+export const closeTable = async (tableName) => {
+  try {
+    // Cancel all orders which haven't been served yet and close the transaction
+    let isOrdersCancelled = await tableRepositories.cancelAllPendingOrder(tableName);
+
+    if (!isOrdersCancelled) {
+      return await (false);
+    }
+
+    // Close the table
+    let isTableClosed = await tableRepositories.closeTable(tableName);
+
+    return await isTableClosed;
+
+  } catch (err) {
+    throw err;
+  }
+}
 
 export const addOrderToTable = async (tableName, lstFood) => {
   try {
