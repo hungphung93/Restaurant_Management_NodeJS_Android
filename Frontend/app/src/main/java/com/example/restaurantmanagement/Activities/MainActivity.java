@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
 
             Menu menu = navigationView.getMenu();
 
-            if(LoggingUser.getUserInfo().GetRole().equals(Role.Cook))
+            if(LoggingUser.getUserInfo().GetRole().equals(Role.Cook.toString()))
                 menu.findItem(R.id.nav_table).setVisible(false);
         }
         catch(Exception ex){
