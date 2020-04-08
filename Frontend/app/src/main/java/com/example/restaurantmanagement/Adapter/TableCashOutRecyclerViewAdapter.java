@@ -63,7 +63,7 @@ public class TableCashOutRecyclerViewAdapter extends RecyclerView.Adapter<TableC
             holder.tvCashOut.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "Cash out is clicked", Toast.LENGTH_SHORT).show();
+                    mListener.onCashOutButtonEventClick();
                 }
             });
 

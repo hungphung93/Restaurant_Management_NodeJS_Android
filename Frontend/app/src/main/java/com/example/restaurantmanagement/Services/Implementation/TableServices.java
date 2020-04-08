@@ -40,6 +40,16 @@ public class TableServices {
         }
     }
 
+    public static ApiResponse<Boolean> closeTable(OpenTableRequest req) {
+        try{
+            ITableServices tableServices = HttpHelper.CreateApiService(ITableServices.class);
+
+            return new ApiResponse(tableServices.closeTable(req));
+        }catch(Exception ex){
+            throw ex;
+        }
+    }
+
     public static ApiResponse<TableTransactionDetail> getTableDetail(OpenTableRequest req){
         try{
             ITableServices tableServices = HttpHelper.CreateApiService(ITableServices.class);
@@ -77,6 +87,17 @@ public class TableServices {
             ITableServices tableServices = HttpHelper.CreateApiService(ITableServices.class);
 
             return new ApiResponse(tableServices.changeStatusOfOrder(req));
+        }
+        catch(Exception ex){
+            throw ex;
+        }
+    }
+
+    public static ApiResponse<TableTransactionDetail> getOrderSummary(OpenTableRequest req){
+        try{
+            ITableServices tableServices = HttpHelper.CreateApiService(ITableServices.class);
+
+            return new ApiResponse(tableServices.getOrderSummary(req));
         }
         catch(Exception ex){
             throw ex;

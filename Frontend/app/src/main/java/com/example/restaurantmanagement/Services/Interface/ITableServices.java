@@ -23,6 +23,9 @@ public interface ITableServices {
     @POST("table/openTable")
     Observable<BaseResponse<Boolean>> openTable(@Body OpenTableRequest req);
 
+    @POST("table/closeTable")
+    Observable<BaseResponse<Boolean>> closeTable(@Body OpenTableRequest req);
+
     @POST("table/getTableDetail")
     Observable<BaseResponse<TableTransactionDetail>> getTableDetail(@Body OpenTableRequest req);
 
@@ -34,4 +37,8 @@ public interface ITableServices {
 
     @POST("/table/changeStatusOfOrder")
     Observable<BaseResponse<Boolean>> changeStatusOfOrder(@Body ChangeStatusOfOrderRequest req);
+
+    @POST("table/getOrderSummary")
+    Observable<BaseResponse<TableTransactionDetail>> getOrderSummary(@Body OpenTableRequest req);
+
 }
