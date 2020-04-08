@@ -23,6 +23,7 @@ import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Table;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,7 @@ public class TableFragment extends Fragment implements ITableListEventListener {
 
     private RecyclerView view;
     private RecyclerView.Adapter adapter;
+    private ProgressWheel loadingSpinner;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,6 +60,10 @@ public class TableFragment extends Fragment implements ITableListEventListener {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
+        loadingSpinner = getActivity().findViewById(R.id.loading_spinner);
+
+        // Display loading spinner before calling API
+        loadingSpinner.setVisibility(View.VISIBLE);
 
         ApiResponse<ArrayList<Table>> lstTables = TableServices.getAllTables();
         lstTables.Subscribe(this::handleGetTablesSuccess, this::handleAPIFailure);
@@ -110,6 +116,9 @@ public class TableFragment extends Fragment implements ITableListEventListener {
 
             if(table.getTableStatus().equals(TableStatus.EMPTY.toString()))
             {
+                // Display loading spinner before calling API
+                loadingSpinner.setVisibility(View.VISIBLE);
+
                 ApiResponse<Boolean> isOpened = TableServices.openTable(new OpenTableRequest(table.getTableName()));
                 isOpened.Subscribe(this::handleOpenTableSuccess, this::handleAPIFailure);
             }
@@ -123,6 +132,8 @@ public class TableFragment extends Fragment implements ITableListEventListener {
 
     private void handleGetTablesSuccess(BaseResponse<ArrayList<Table>> response){
         try{
+            // Hide loading spinner once get API response
+            loadingSpinner.setVisibility(View.INVISIBLE);
             if(!response.IsSuccess())
             {
                 Toast.makeText(context, response.GetMessage(), Toast.LENGTH_LONG).show();
@@ -144,6 +155,9 @@ public class TableFragment extends Fragment implements ITableListEventListener {
 
     private void handleOpenTableSuccess(BaseResponse<Boolean> response){
         try{
+            // Hide loading spinner once get API response
+            loadingSpinner.setVisibility(View.INVISIBLE);
+
             if(!response.IsSuccess())
             {
                 Toast.makeText(context, response.GetMessage(), Toast.LENGTH_LONG).show();
@@ -162,6 +176,9 @@ public class TableFragment extends Fragment implements ITableListEventListener {
     }
 
     private void handleAPIFailure(Throwable t){
+        // Hide loading spinner once get API response
+        loadingSpinner.setVisibility(View.INVISIBLE);
+
         Toast.makeText(context, "Internal error happened. Please try later.",
                 Toast.LENGTH_LONG).show();
     }

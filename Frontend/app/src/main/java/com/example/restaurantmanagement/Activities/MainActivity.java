@@ -53,16 +53,17 @@ public class MainActivity extends AppCompatActivity implements  NavigationView.O
             drawer.addDrawerListener(toggle);
             toggle.syncState();
 
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_activity_frame, new OrderedFoodFragment())
-                    .commit();
-
             navigationView.setCheckedItem(R.id.nav_food);
 
             Menu menu = navigationView.getMenu();
 
             if(LoggingUser.getUserInfo().GetRole().equals(Role.Cook.toString()))
                 menu.findItem(R.id.nav_table).setVisible(false);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_activity_frame, new OrderedFoodFragment())
+                    .commit();
+
         }
         catch(Exception ex){
             Toast.makeText(getApplicationContext(),ex.getMessage(), Toast.LENGTH_LONG).show();
