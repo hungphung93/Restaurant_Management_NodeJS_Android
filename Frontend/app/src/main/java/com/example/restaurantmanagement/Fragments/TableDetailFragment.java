@@ -24,6 +24,7 @@ import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.Models.TableTransactionDetail;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
+import com.example.restaurantmanagement.Utilities.LoadingSpinnerHelper;
 
 import java.util.ArrayList;
 
@@ -58,6 +59,9 @@ public class TableDetailFragment extends Fragment implements IOrderedFoodListEve
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+        // Display loading spinner before calling API
+        LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
 
         // Call API to load ordered foods of the selected table
         ApiResponse<TableTransactionDetail> transaction = TableServices.getTableDetail(new OpenTableRequest(this.tableName));
@@ -125,6 +129,8 @@ public class TableDetailFragment extends Fragment implements IOrderedFoodListEve
 
     private void handleGetTableTransactionSuccess(BaseResponse<TableTransactionDetail> response){
         try{
+            LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
             if(!response.IsSuccess()){
                 Toast.makeText(context, response.GetMessage(), Toast.LENGTH_LONG).show();
                 return;
@@ -145,6 +151,8 @@ public class TableDetailFragment extends Fragment implements IOrderedFoodListEve
 
 
     private void handleAPIFailure(Throwable t){
+        LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
         Toast.makeText(context, "Internal error happened. Please try later.",
                 Toast.LENGTH_LONG).show();
     }

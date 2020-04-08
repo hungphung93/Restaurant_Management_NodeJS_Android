@@ -15,6 +15,7 @@ import com.example.restaurantmanagement.Models.LoggingUser;
 import com.example.restaurantmanagement.Models.UserInfo;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.AuthServices;
+import com.example.restaurantmanagement.Utilities.LoadingSpinnerHelper;
 
 public class LoginActivity extends AppCompatActivity{
 
@@ -42,6 +43,9 @@ public class LoginActivity extends AppCompatActivity{
             String username = etUsername.getText().toString();
             String password = etPassword.getText().toString();
 
+            // Display loading spinner before calling API
+            LoadingSpinnerHelper.displayLoadingSpinner(this);
+
             ApiResponse<UserInfo> userInfo = AuthServices.Login(new AuthorizeUser(username, password));
             userInfo.Subscribe(this::handleLoginSuccess, this::handleLoginError);
         }catch(Exception ex){
@@ -55,6 +59,8 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private void handleLoginSuccess(BaseResponse<UserInfo> response){
+        LoadingSpinnerHelper.hideLoadingSpinner(this);
+
         if(!response.IsSuccess())
         {
             Toast.makeText(getApplicationContext(),response.GetMessage(), Toast.LENGTH_LONG).show();
@@ -70,6 +76,8 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private void handleLoginError(Throwable t){
+        LoadingSpinnerHelper.hideLoadingSpinner(this);
+
         Toast.makeText(this, "Internal error happened. Please try later.",
                 Toast.LENGTH_LONG).show();
     }

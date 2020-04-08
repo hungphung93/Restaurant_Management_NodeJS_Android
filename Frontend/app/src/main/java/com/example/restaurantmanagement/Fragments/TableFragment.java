@@ -1,7 +1,6 @@
 package com.example.restaurantmanagement.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -23,7 +22,7 @@ import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.Table;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
-import com.pnikosis.materialishprogress.ProgressWheel;
+import com.example.restaurantmanagement.Utilities.LoadingSpinnerHelper;
 
 import java.util.ArrayList;
 
@@ -44,12 +43,7 @@ public class TableFragment extends Fragment implements ITableListEventListener {
 
     private RecyclerView view;
     private RecyclerView.Adapter adapter;
-    private ProgressWheel loadingSpinner;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public TableFragment() {    }
 
     @Override
@@ -60,10 +54,7 @@ public class TableFragment extends Fragment implements ITableListEventListener {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        loadingSpinner = getActivity().findViewById(R.id.loading_spinner);
-
-        // Display loading spinner before calling API
-        loadingSpinner.setVisibility(View.VISIBLE);
+        LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
 
         ApiResponse<ArrayList<Table>> lstTables = TableServices.getAllTables();
         lstTables.Subscribe(this::handleGetTablesSuccess, this::handleAPIFailure);
@@ -91,13 +82,6 @@ public class TableFragment extends Fragment implements ITableListEventListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*
-        if (context instanceof ITableListEventListener) {
-            mListener = (ITableListEventListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement ITableListEventListener");
-        }*/
 
         mListener = this;
     }
@@ -117,7 +101,7 @@ public class TableFragment extends Fragment implements ITableListEventListener {
             if(table.getTableStatus().equals(TableStatus.EMPTY.toString()))
             {
                 // Display loading spinner before calling API
-                loadingSpinner.setVisibility(View.VISIBLE);
+                LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
 
                 ApiResponse<Boolean> isOpened = TableServices.openTable(new OpenTableRequest(table.getTableName()));
                 isOpened.Subscribe(this::handleOpenTableSuccess, this::handleAPIFailure);
@@ -133,7 +117,8 @@ public class TableFragment extends Fragment implements ITableListEventListener {
     private void handleGetTablesSuccess(BaseResponse<ArrayList<Table>> response){
         try{
             // Hide loading spinner once get API response
-            loadingSpinner.setVisibility(View.INVISIBLE);
+            LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
             if(!response.IsSuccess())
             {
                 Toast.makeText(context, response.GetMessage(), Toast.LENGTH_LONG).show();
@@ -156,7 +141,7 @@ public class TableFragment extends Fragment implements ITableListEventListener {
     private void handleOpenTableSuccess(BaseResponse<Boolean> response){
         try{
             // Hide loading spinner once get API response
-            loadingSpinner.setVisibility(View.INVISIBLE);
+            LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
 
             if(!response.IsSuccess())
             {
@@ -177,7 +162,8 @@ public class TableFragment extends Fragment implements ITableListEventListener {
 
     private void handleAPIFailure(Throwable t){
         // Hide loading spinner once get API response
-        loadingSpinner.setVisibility(View.INVISIBLE);
+        LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
 
         Toast.makeText(context, "Internal error happened. Please try later.",
                 Toast.LENGTH_LONG).show();

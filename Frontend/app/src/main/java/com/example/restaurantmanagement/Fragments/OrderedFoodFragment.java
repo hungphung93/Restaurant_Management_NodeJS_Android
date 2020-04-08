@@ -25,6 +25,10 @@ import com.example.restaurantmanagement.Models.LoggingUser;
 import com.example.restaurantmanagement.Models.Order;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
+import com.example.restaurantmanagement.Utilities.HttpHelper;
+import com.example.restaurantmanagement.Utilities.LoadingSpinnerHelper;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -51,9 +55,13 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
+        // Display loading spinner before calling API
+        LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
+
         ApiResponse<ArrayList<Order>> lstOrderedFoods = TableServices.getAllOrderedFoodByRole(
                 new GetOrderedFoodRequest(LoggingUser.getUserInfo().GetRole()));
         lstOrderedFoods.Subscribe(this::handleGetAllOrderedFoodSuccess, this::handleAPIFailure);
+
     }
 
     @Override
@@ -94,6 +102,9 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     @Override
     public void onOrderedFoodClick(Order orderedFood) {
         if(isValidToChangeOrderStatus(orderedFood)){
+            // Display loading spinner before calling API
+            LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
+
             ApiResponse<Boolean> isUpdated = TableServices.changeStatusOfOrder(new ChangeStatusOfOrderRequest(orderedFood.getTransactionId(),
                     orderedFood.getOrderId(),
                     orderedFood.getFoodStatus()));
@@ -105,9 +116,6 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     private boolean isValidToChangeOrderStatus(Order order){
 
         String a = LoggingUser.getUserInfo().GetRole();
-        if(a.equals(Role.Waiter.toString())){
-            int tmp = 1;
-        }
 
         if(LoggingUser.getUserInfo().GetRole().equals(Role.Waiter.toString()) &&
                 (order.getFoodStatus().equals(OrderStatus.ONLINE.toString()) || order.getFoodStatus().equals(OrderStatus.COOKING.toString())))
@@ -121,10 +129,15 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     }
 
     private void handleChangeOrderStatusSuccess(BaseResponse response) {
+        LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
         if(!response.IsSuccess()){
             Toast.makeText(context, response.GetMessage(), Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // Display loading spinner before calling API
+        LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
 
         // After update status successfully, reload the list
         ApiResponse<ArrayList<Order>> lstOrderedFoods = TableServices.getAllOrderedFoodByRole(
@@ -133,10 +146,13 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     }
 
     private void handleGetAllOrderedFoodSuccess(BaseResponse<ArrayList<Order>> response) {
+        LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
         if(!response.IsSuccess()){
             Toast.makeText(context, response.GetMessage(), Toast.LENGTH_SHORT).show();
             return;
         }
+
 
         ArrayList<Order> lstAllOrders = response.GetData();
 
@@ -148,7 +164,11 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     }
 
     private void handleAPIFailure(Throwable t){
+        LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
         Toast.makeText(context, "Internal error happened. Pccclease try later.",
                 Toast.LENGTH_LONG).show();
+
     }
+
 }
