@@ -78,11 +78,12 @@ export const openTable = async (tableName) => {
 
 export const cancelAllPendingOrder = async (tableName) => {
     try {
-        let transaction = await TransactionEntity.find({ tableName: tableName, status: TransactionStatus.PROCESSING });
+        let transaction = await TransactionEntity.findOne({ table_name: tableName, status: TransactionStatus.PROCESSING });
 
         if (transaction == null) {
             return await (false);
         }
+
 
         transaction.ordered_foods.forEach(order => {
             if (order.status != FoodStatus.SERVED) {
@@ -108,12 +109,13 @@ export const cancelAllPendingOrder = async (tableName) => {
 export const closeTable = async (tableName) => {
     try {
         // Update table status
-        let table = await TableEntity.find({ tableName: tableName });
+        let table = await TableEntity.findOne({ name: tableName });
 
         if (table == null)
             return await false;
 
         table.status = TableStatus.EMPTY;
+	table.open_at = null;
 
         await table.save();
 
