@@ -736,3 +736,13 @@ SyntaxError: C:/Users/Hanson Phung/Desktop/Study/Semester_3/Android/Project/git/
 2020-04-09T00:24:45.914Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"
 2020-04-09T00:25:20.927Z error : undefined : Cannot read property 'ordered_foods' of null
 2020-04-09T00:25:22.748Z error : undefined : Cannot read property 'ordered_foods' of null
+2020-04-09T00:40:10.663Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"
+2020-04-09T00:40:18.125Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"
+2020-04-09T00:48:06.062Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"
+2020-04-09T00:49:06.260Z error : undefined : Cannot read property 'ordered_foods' of null
+2020-04-09T00:49:51.861Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"
+2020-04-09T00:50:41.303Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"
+2020-04-09T00:50:57.944Z error : undefined : Cannot read property 'foodName' of undefined
+2020-04-09T00:54:00.562Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"
+2020-04-09T00:54:03.755Z error : undefined : Cannot read property 'ordered_foods' of null
+2020-04-09T00:54:15.752Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"

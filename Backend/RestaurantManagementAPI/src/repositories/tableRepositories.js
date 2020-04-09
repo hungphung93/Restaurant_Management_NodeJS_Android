@@ -139,7 +139,7 @@ export const addOrderToTable = async (tableName, lstFood) => {
       let orderId = new mongoose.Types.ObjectId();
       return new OrderedFood(
         orderId,
-        x.food_id,
+        x.foodId,
         FoodStatus.ONLINE,
         x.quantity,
         x.price,
