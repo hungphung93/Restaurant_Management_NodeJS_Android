@@ -4,17 +4,29 @@ import com.google.gson.annotations.SerializedName;
 
 public class FoodItem {
 
-    @SerializedName("food_id")
+    @SerializedName("foodId")
     private String id;
+    @SerializedName("foodName")
     private String name;
+    @SerializedName("category")
     private String foodType;
     @SerializedName("quantity")
     private int quantity;
     @SerializedName("price")
     private double price;
+    @SerializedName("imageURL")
+    private String url;
 
     public FoodItem(){
 
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public FoodItem(String id, String name, String foodType, double price) {

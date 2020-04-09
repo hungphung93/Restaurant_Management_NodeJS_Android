@@ -20,13 +20,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.restaurantmanagement.EventListenerInterface.ITableOrderEventListener;
 import com.example.restaurantmanagement.Models.FoodItem;
 import com.example.restaurantmanagement.R;
+import com.example.restaurantmanagement.Utilities.HttpHelper;
 
 import java.util.ArrayList;
 
@@ -80,6 +85,8 @@ public class FoodMenuRecycleViewAdapter extends RecyclerView.Adapter<FoodMenuRec
     class NumberViewHolder extends RecyclerView.ViewHolder  implements OnClickListener {
 
         TextView food_item;
+        TextView food_price;
+        ImageView food_image;
 
 
 
@@ -87,6 +94,8 @@ public class FoodMenuRecycleViewAdapter extends RecyclerView.Adapter<FoodMenuRec
             super(itemView);
 
             food_item = (TextView) itemView.findViewById(R.id.food_item);
+            food_price = itemView.findViewById(R.id.food_price);
+            food_image = itemView.findViewById(R.id.food_image);
             itemView.setOnClickListener(this);
 
         }
@@ -95,12 +104,23 @@ public class FoodMenuRecycleViewAdapter extends RecyclerView.Adapter<FoodMenuRec
         void bind(int listIndex) {
             for(int i =0;i<=listIndex;i++) {
                 food_item.setText(foodItems.get(i).getName());
+                food_price.setText("$"+foodItems.get(i).getPrice());
+                String url = String.format("%simages/%s", HttpHelper.BASE_URL, foodItems.get(i).getUrl());
+
+                // set the image
+                Glide.with(context)
+                        .asBitmap()
+                        .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .preload();
+
+                Glide.with(context)
+                        .asBitmap()
+                        .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE) // ALL works here too
+                        .into(food_image);
             }
 
-            //just to display the color in list of odd items in alternative order
-            //if(listIndex % 2 != 0) {
-              //  this.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListRowSeparator));
-            //}
         }
 
         @Override

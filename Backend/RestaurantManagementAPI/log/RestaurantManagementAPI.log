@@ -723,3 +723,16 @@ SyntaxError: C:/Users/Hanson Phung/Desktop/Study/Semester_3/Android/Project/git/
 2020-04-05T19:45:07.142Z error : undefined : console is not a function
 2020-04-05T19:46:29.120Z error : undefined : console is not a function
 2020-04-05T19:47:30.738Z error : undefined : Cannot read property 'foodName' of undefined
+2020-04-09T00:12:53.924Z error : undefined : Cannot read property 'foodName' of undefined
+2020-04-09T00:13:07.751Z error : undefined : Cannot read property 'foodName' of undefined
+2020-04-09T00:14:29.107Z error : undefined : Cannot read property 'foodName' of undefined
+2020-04-09T00:15:34.619Z error : undefined : Cannot read property 'foodName' of undefined
+2020-04-09T00:15:53.003Z error : undefined : Cannot read property 'foodName' of undefined
+2020-04-09T00:16:19.942Z error : undefined : Cannot read property 'foodName' of undefined
+2020-04-09T00:18:18.973Z error : undefined : Cannot read property 'foodName' of undefined
+2020-04-09T00:23:43.688Z error : undefined : Cannot read property 'ordered_foods' of null
+2020-04-09T00:24:26.525Z error : undefined : Cannot read property 'ordered_foods' of null
+2020-04-09T00:24:40.953Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"
+2020-04-09T00:24:45.914Z error : undefined : Cast to ObjectId failed for value "On Line" at path "_id" for model "foods"
+2020-04-09T00:25:20.927Z error : undefined : Cannot read property 'ordered_foods' of null
+2020-04-09T00:25:22.748Z error : undefined : Cannot read property 'ordered_foods' of null

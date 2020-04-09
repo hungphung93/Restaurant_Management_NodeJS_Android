@@ -1,4 +1,4 @@
-package com.example.restaurantmanagement.Fragments;
+package com.example.restaurantmanagement.Fragments.tableOrder;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,11 +19,11 @@ import java.util.ArrayList;
 
 public class FoodListFragment extends Fragment implements ITableOrderEventListener {
     private ArrayList<FoodItem> foodLists;
-    private String[] itemTypes;
+    private ArrayList<String>  itemTypes;
     private int tabnumber;
     private ArrayList<FoodItem> dynamicfooditem;
     IFooItemTypeTabEventListener listener;
-    public FoodListFragment(IFooItemTypeTabEventListener listener, int position, ArrayList<FoodItem> foodLists, String[] itemTypes) {
+    public FoodListFragment(IFooItemTypeTabEventListener listener, int position, ArrayList<FoodItem> foodLists, ArrayList<String>  itemTypes) {
         // Required empty public constructor
         this.listener = listener;
         this.foodLists = foodLists;
@@ -45,9 +45,9 @@ public class FoodListFragment extends Fragment implements ITableOrderEventListen
         mNumbersList.setHasFixedSize(true);
 
 
-
+        String category = itemTypes.get(tabnumber);
         for (FoodItem item: foodLists) {
-            if(item.getFoodType() == itemTypes[tabnumber]){
+            if(item.getFoodType().equals(category)){
                 dynamicfooditem.add(item);
             }
         }
