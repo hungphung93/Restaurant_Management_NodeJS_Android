@@ -13,16 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.restaurantmanagement.Adapter.MyTableDetailRecyclerViewAdapter;
 import com.example.restaurantmanagement.Adapter.TableCashOutRecyclerViewAdapter;
 import com.example.restaurantmanagement.EventListenerInterface.ITableCashoutEventListener;
-import com.example.restaurantmanagement.Fragments.tableOrder.TableOrderFragment;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
 import com.example.restaurantmanagement.Models.OpenTableRequest;
 import com.example.restaurantmanagement.Models.TableTransactionDetail;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
+import com.example.restaurantmanagement.Utilities.LoadingSpinnerHelper;
 
 import java.util.ArrayList;
 
@@ -70,6 +69,9 @@ public class TableCashOutFragment extends Fragment implements ITableCashoutEvent
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
+            // Display loading spinner before calling API
+            LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
+
             ApiResponse<TableTransactionDetail> transaction = TableServices.getOrderSummary(new OpenTableRequest(this.tableName));
             transaction.Subscribe(this::handleGetTableTransactionSuccess, this::handleAPIFailure);
         }
@@ -78,6 +80,8 @@ public class TableCashOutFragment extends Fragment implements ITableCashoutEvent
 
     private void handleGetTableTransactionSuccess(BaseResponse<TableTransactionDetail> response) {
         try{
+            LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
             if(!response.IsSuccess())
             {
                 Toast.makeText(context, response.GetMessage(), Toast.LENGTH_SHORT).show();
@@ -93,6 +97,8 @@ public class TableCashOutFragment extends Fragment implements ITableCashoutEvent
     }
 
     private void handleAPIFailure(Throwable throwable) {
+        LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
         Toast.makeText(context, "Internal error happened. Please try later.", Toast.LENGTH_SHORT).show();
     }
 
@@ -111,12 +117,17 @@ public class TableCashOutFragment extends Fragment implements ITableCashoutEvent
 
     @Override
     public void onCashOutButtonEventClick() {
+        // Display loading spinner before calling API
+        LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
+
         ApiResponse<Boolean> isTableClosed = TableServices.closeTable(new OpenTableRequest(this.tableName));
         isTableClosed.Subscribe(this::handleCloseTableSuccess, this::handleAPIFailure);
     }
 
     private void handleCloseTableSuccess(BaseResponse<Boolean> response) {
         try{
+            LoadingSpinnerHelper.hideLoadingSpinner(getActivity());
+
             if(!response.IsSuccess()){
                 Toast.makeText(context, response.GetMessage(), Toast.LENGTH_SHORT).show();
                 return;

@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".Activities.LoginActivity">
 
+    <include layout="@layout/overlay_loading_spinner"/>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +19,7 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:orientation="vertical">
+
 
 
         <LinearLayout
@@ -29,14 +33,15 @@
                 android:id="@+id/tvUsername"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
+                android:textSize="16dp"
                 android:text="Username"/>
 
             <EditText
                 android:id="@+id/etUsername"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="5"
                 android:hint="Enter Username"
                 android:layout_marginLeft="20dp"/>
 
@@ -52,14 +57,15 @@
                 android:id="@+id/tvPassword"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
+                android:textSize="16dp"
                 android:text="Password"/>
 
             <EditText
                 android:id="@+id/etPassword"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="5"
                 android:hint="Enter Password"
                 android:layout_marginLeft="20dp"
                 android:inputType="textPassword"/>
@@ -79,6 +85,7 @@
                 android:layout_weight="1"
                 android:text="Login"
                 android:textSize="20dp"
+                android:textStyle="bold"
                 android:textColor="@color/colorWhite"
                 android:background="@drawable/bg_btn_success"
                 android:onClick="login"/>
@@ -97,8 +104,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Reset"
+                android:textSize="20dp"
+                android:textStyle="bold"
                 android:textColor="@color/colorWhite"
-                android:background="@color/colorAccent"
+                android:background="@drawable/bg_btn_danger"
                 android:onClick="reset"
                 />
         </LinearLayout>
