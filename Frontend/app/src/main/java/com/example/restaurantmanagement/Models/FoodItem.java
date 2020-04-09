@@ -11,7 +11,7 @@ public class FoodItem {
     @SerializedName("category")
     private String foodType;
     @SerializedName("quantity")
-    private int quantity;
+    private int quantity = 1;
     @SerializedName("price")
     private double price;
     @SerializedName("imageURL")

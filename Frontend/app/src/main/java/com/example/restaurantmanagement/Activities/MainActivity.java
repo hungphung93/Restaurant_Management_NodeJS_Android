@@ -1,5 +1,11 @@
 package com.example.restaurantmanagement.Activities;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,27 +14,12 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
-
 import com.example.restaurantmanagement.Enums.Role;
-import com.example.restaurantmanagement.Enums.TableStatus;
-import com.example.restaurantmanagement.EventListenerInterface.ITableListEventListener;
 import com.example.restaurantmanagement.Fragments.OrderedFoodFragment;
 import com.example.restaurantmanagement.Fragments.TableFragment;
-import com.example.restaurantmanagement.Models.ApiResponse;
-import com.example.restaurantmanagement.Models.BaseResponse;
 import com.example.restaurantmanagement.Models.LoggingUser;
-import com.example.restaurantmanagement.Models.OpenTableRequest;
-import com.example.restaurantmanagement.Models.Table;
 import com.example.restaurantmanagement.R;
-import com.example.restaurantmanagement.Services.Implementation.TableServices;
 import com.google.android.material.navigation.NavigationView;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
 
