@@ -26,12 +26,11 @@ import com.example.restaurantmanagement.Models.AddOrderToTableRequest;
 import com.example.restaurantmanagement.Models.ApiResponse;
 import com.example.restaurantmanagement.Models.BaseResponse;
 import com.example.restaurantmanagement.Models.FoodItem;
-import com.example.restaurantmanagement.Models.Order;
-import com.example.restaurantmanagement.Models.Table;
 import com.example.restaurantmanagement.R;
-import com.example.restaurantmanagement.Services.Implementation.OrderServices;
+import com.example.restaurantmanagement.Services.Implementation.FoodServices;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
 import com.google.android.material.tabs.TabLayout;
+
 import java.util.ArrayList;
 
 
@@ -84,10 +83,10 @@ public class TableOrderFragment extends Fragment implements IReceiptItemEventLis
         confirmButton.setOnClickListener(this);
         //Tab is dynamic and each tab is according to the food type for now.
         //get food item type for the tab
-        String[] itemTypes = OrderServices.getItemType();
+        //String[] itemTypes = OrderServices.getItemType();
 
-        ArrayList<FoodItem> allfood = OrderServices.getFoodItems();
-        ArrayList<FoodItem> orderedItem;
+        //ArrayList<FoodItem> allfood = OrderServices.getFoodItems();
+        //ArrayList<FoodItem> orderedItem;
 
 
 
@@ -95,37 +94,10 @@ public class TableOrderFragment extends Fragment implements IReceiptItemEventLis
          * TAB part
          */
 
-
-        //Get all the itemtypes and create tab.
-        for (String c:itemTypes  ) {
-            tabLayout.addTab(tabLayout.newTab().setText(c));
-        }
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        ApiResponse<ArrayList<FoodItem>> lstFoods = FoodServices.getAllFoods();
+        lstFoods.Subscribe(this::handleGetAllFoodsSuccess, this::handleAPIFailure);
 
 
-        //Create Adapter for viewpager
-        //The adapter initializes as many fragment containing recycle View.
-        //and the viewpager will be filled with fragment according to the position of tab whenever a tab is selected
-        final FoodTypeTabAdapter adapter = new FoodTypeTabAdapter(this, context ,getFragmentManager(), tabLayout.getTabCount(), allfood, itemTypes);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
         /**
          * Receipt section where all orders is listed.
@@ -260,5 +232,67 @@ public class TableOrderFragment extends Fragment implements IReceiptItemEventLis
 
     private void handleAPIFailure(Throwable t){
         Toast.makeText(context, "Internal Error happened.", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private ArrayList<String> getCategoriesFromFood(ArrayList<FoodItem> lstFoods){
+        ArrayList<String> categories = new ArrayList<String>();
+
+        for (FoodItem food: lstFoods) {
+            if(categories.contains(food.getFoodType())) continue;
+            categories.add(food.getFoodType());
+        }
+
+        return categories;
+    }
+
+
+
+
+
+    private void handleGetAllFoodsSuccess(BaseResponse<ArrayList<FoodItem>> response) {
+
+        if(!response.IsSuccess()){
+            Toast.makeText(context, response.GetMessage(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ArrayList<FoodItem> allFood = response.GetData();
+        ArrayList<String> categories = getCategoriesFromFood(allFood);
+
+        //Get all the itemtypes and create tab.
+        for (String c:categories  ) {
+            tabLayout.addTab(tabLayout.newTab().setText(c));
+        }
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+
+        //Create Adapter for viewpager
+        //The adapter initializes as many fragment containing recycle View.
+        //and the viewpager will be filled with fragment according to the position of tab whenever a tab is selected
+        final FoodTypeTabAdapter adapter = new FoodTypeTabAdapter(this, context ,getFragmentManager(), tabLayout.getTabCount(), allFood, categories);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+
+
+
     }
 }
