@@ -29,6 +29,8 @@ import com.example.restaurantmanagement.Models.FoodItem;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.FoodServices;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
+import com.example.restaurantmanagement.Utilities.SocketHelper;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -143,7 +145,7 @@ public class TableOrderFragment extends Fragment implements IReceiptItemEventLis
     //This method is invoked whenever certain food item is ordered and is invoked from FoodMenuRecycleViewAdapter
     public void orderFood(FoodItem item){
         mAdapter.updateReceiptsList(item);
-        System.out.println(mAdapter.getItemCount());
+        //System.out.println(mAdapter.getItemCount());
         if(mAdapter.getItemCount()>0){
 
             receipt.setVisibility(View.VISIBLE);
@@ -223,6 +225,9 @@ public class TableOrderFragment extends Fragment implements IReceiptItemEventLis
             return;
         }
 
+        //Socket connection sends data that food is added.
+        Socket socket = SocketHelper.getSocket();
+        socket.emit("updated");
         TableDetailFragment fragment = new TableDetailFragment(tableName);
 
         getFragmentManager().beginTransaction()

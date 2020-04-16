@@ -27,6 +27,9 @@ import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.TableServices;
 import com.example.restaurantmanagement.Utilities.HttpHelper;
 import com.example.restaurantmanagement.Utilities.LoadingSpinnerHelper;
+import com.example.restaurantmanagement.Utilities.SocketHelper;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONObject;
 
@@ -41,10 +44,10 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
     private IOrderedFoodListEventListener mListener;
 
     private Context context;
-    private ArrayList<Order> ListOrderedFood;
+    private ArrayList<Order> ListOrderedFood = new ArrayList<>();
     private View view;
     private OrderListRecyclerViewAdapter adapter;
-
+    RecyclerView recyclerView;
     public OrderedFoodFragment() { }
 
     @Override
@@ -82,15 +85,47 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
             }
         }
 
+        recyclerView = (RecyclerView) view.findViewById(R.id.list_food);
+        adapter = new OrderListRecyclerViewAdapter(context, this.ListOrderedFood, mListener);
+        recyclerView.setAdapter(adapter);
+
+        Socket socket = SocketHelper.getSocket();
+        //socket.emit("food-added");
+        socket.on("update", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                if(getActivity() == null)
+                    return;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //System.out.println("update");
+                        update();
+                    }
+                });
+            }
+        });
         return view;
     }
 
+   private void update(){
+       // Display loading spinner before calling API
+       LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
+
+       ApiResponse<ArrayList<Order>> lstOrderedFoods = TableServices.getAllOrderedFoodByRole(
+               new GetOrderedFoodRequest(LoggingUser.getUserInfo().GetRole()));
+       lstOrderedFoods.Subscribe(this::handleGetAllOrderedFoodSuccess, this::handleAPIFailure);
+
+   }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
         mListener = this;
+
+
+
     }
 
     @Override
@@ -136,6 +171,9 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
             return;
         }
 
+        Socket socket = SocketHelper.getSocket();
+        socket.emit("updated");
+
         // Display loading spinner before calling API
         LoadingSpinnerHelper.displayLoadingSpinner(getActivity());
 
@@ -156,11 +194,8 @@ public class OrderedFoodFragment extends Fragment implements IOrderedFoodListEve
 
         ArrayList<Order> lstAllOrders = response.GetData();
 
-        this.ListOrderedFood = lstAllOrders;
-
-        RecyclerView lstFoodView = (RecyclerView) view.findViewById(R.id.list_food);
-
-        lstFoodView.setAdapter(new OrderListRecyclerViewAdapter(context, this.ListOrderedFood, mListener));
+        //this.ListOrderedFood = lstAllOrders;
+        adapter.updateOrderList(lstAllOrders);
     }
 
     private void handleAPIFailure(Throwable t){

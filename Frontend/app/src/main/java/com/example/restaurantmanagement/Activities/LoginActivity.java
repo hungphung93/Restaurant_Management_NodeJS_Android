@@ -16,6 +16,8 @@ import com.example.restaurantmanagement.Models.UserInfo;
 import com.example.restaurantmanagement.R;
 import com.example.restaurantmanagement.Services.Implementation.AuthServices;
 import com.example.restaurantmanagement.Utilities.LoadingSpinnerHelper;
+import com.example.restaurantmanagement.Utilities.SocketHelper;
+import com.github.nkzawa.socketio.client.Socket;
 
 public class LoginActivity extends AppCompatActivity{
 

@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HttpHelper{
     // Trailing slash is needed
-    public static final String BASE_URL = "http://10.0.0.222:3000/";
+    public static final String BASE_URL = "https://res-man.herokuapp.com/";
 
     private static Retrofit instance = null;
 

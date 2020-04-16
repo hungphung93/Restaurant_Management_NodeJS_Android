@@ -93,6 +93,11 @@ public class OrderListRecyclerViewAdapter extends RecyclerView.Adapter<OrderList
         return orders.size();
     }
 
+    public void updateOrderList(ArrayList<Order> lstAllOrders) {
+        this.orders = lstAllOrders;
+        notifyDataSetChanged();
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         View mview;
