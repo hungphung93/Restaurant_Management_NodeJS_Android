@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import * as databaseUtilities from '../shared/utilities/databaseUtilities';
 import * as mongoDBEntityNames from '../shared/constants/mongoDBEntityNames';
 
-const FoodEntity = new mongoose.Schema({
+const FoodSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -33,4 +33,4 @@ const FoodEntity = new mongoose.Schema({
     }
 });
 
-export const TableEntity = databaseUtilities.getEntity(mongoDBEntityNames.tableCollection, TableSchema);
+export const FoodEntity = databaseUtilities.getEntity(mongoDBEntityNames.foodCollection, FoodSchema);

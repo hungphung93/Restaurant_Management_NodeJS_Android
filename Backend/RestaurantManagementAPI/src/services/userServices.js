@@ -1,7 +1,7 @@
 import * as userRepositories from '../repositories/userRepositories';
 import * as encryptUtilities from '../shared/utilities/encryptUtilities';
 import * as jwtUtilities from '../shared/utilities/jsonWebTokenUtilities';
-import CustomizedException from '../shared/models/CustomizedException';
+import CustomException from '../shared/models/CustomException';
 import * as errorMessage from '../shared/constants/errorMessages';
 import AuthenticatedUser from '../models/AuthenticatedUser';
 
@@ -20,9 +20,9 @@ export const login = async (username, password) => {
     try {
         let createdUser = await userRepositories.login(username, password);
 
-        if (!createdUser) throw new CustomizedException('200', errorMessage.INVALID_USERNAME_PASSWORD);
+        if (!createdUser) throw new CustomException(true, errorMessage.INVALID_USERNAME_PASSWORD);
 
-        if (!createdUser.comparePassword(password, createdUser.password)) throw new CustomizedException('200', errorMessage.INVALID_USERNAME_PASSWORD);
+        if (!createdUser.comparePassword(password, createdUser.password)) throw new CustomException(true, errorMessage.INVALID_USERNAME_PASSWORD);
 
         let access_token = await jwtUtilities.createToken(username, createdUser.id, createdUser.role);
 

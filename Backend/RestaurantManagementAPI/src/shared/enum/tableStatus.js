@@ -1,4 +1,4 @@
 export const TableStatus = {
-    EMPTY: "EMPTY",
-    SERVING: "SERVING"
+    EMPTY: "Empty",
+    SERVING: "Serving"
 };

@@ -6,23 +6,26 @@ import authRoutes from './src/routes/authRoutes';
 import tableRoutes from './src/routes/tableRoutes';
 import foodRoutes from './src/routes/foodRoutes';
 import config from './config.json';
-import { logger } from './src/shared/utilities/LoggingUtilities'
+import { logger } from './src/shared/utilities/LoggingUtilities';
 import * as jwtUtilities from './src/shared/utilities/jsonWebTokenUtilities';
 
 const app = express();
+const server = require('http').createServer(app);
 
+const io = require('socket.io').listen(server);
 // mongoose connection
 mongoose.Promise = global.Promise;
 
-mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`, {
-    useMongoClient: config.db.useMongoClient
-});
-
+mongoose.connect(
+  `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`,
+  {
+    useMongoClient: config.db.useMongoClient,
+  }
+);
 
 // bodyparser setup
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 
 // serving static files
 app.use(express.static('public'));
@@ -30,55 +33,71 @@ app.use(express.static('public'));
 app.use(cors({ origin: true }));
 
 app.all('*', (req, res, err, next) => {
-    if (err) {
-        logger.error(req, err);
-    } else {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
-        res.setHeader('Access-Control-Allow-Credentials', true); // If needed
-    }
+  if (err) {
+    logger.error(req, err);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
+      'Access-Control-Allow-Methods',
+      'GET, POST, OPTIONS, PUT, PATCH, DELETE'
+    ); // If needed
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      'X-Requested-With,content-type'
+    ); // If needed
+    res.setHeader('Access-Control-Allow-Credentials', true); // If needed
+  }
 
-    next();
+  next();
 });
+app.use('/images', express.static(__dirname + '/images'));
 
 // Register JWT Authentication
 app.use(async (req, res, next) => {
-    try {
-        if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
-            let authorization = req.headers.authorization;
-            let accessToken = authorization.split(' ')[1];
+  try {
+    if (
+      req.headers &&
+      req.headers.authorization &&
+      req.headers.authorization.split(' ')[0] === 'JWT'
+    ) {
+      let authorization = req.headers.authorization;
+      let accessToken = authorization.split(' ')[1];
 
-            let userData = await jwtUtilities.verifyToken(accessToken);
+      let userData = await jwtUtilities.verifyToken(accessToken);
 
-            console.log(userData);
+      console.log(userData);
 
-            req.userInfo = userData;
-            next();
-
-        } else {
-            req.userInfo = undefined;
-            next();
-        }
-    } catch (err) {
-        logger.error(err);
-        console.log(err);
-        req.userInfo = undefined;
-        next();
+      req.userInfo = userData;
+      next();
+    } else {
+      req.userInfo = undefined;
+      next();
     }
-
+  } catch (err) {
+    logger.error(err);
+    console.log(err);
+    req.userInfo = undefined;
+    next();
+  }
 });
-
 
 // Register api Routing
 authRoutes(app);
 tableRoutes(app);
 foodRoutes(app);
 
+//const users = {};
+io.on('connection', (socket) => {
+  socket.on('updated', () => {
+    socket.broadcast.emit('update');
+    console.log('updated');
+  });
+});
+
 app.get('/', (req, res) =>
-    res.send(`Node and express server is running on port ${config.app.port}`)
+  res.send(`Node and express server is running on port ${config.app.port}`)
 );
 
-app.listen(config.app.port, () =>
-    console.log(`your server is running on port ${config.app.port}`)
+server.listen(config.app.port, () =>
+  console.log(`your server is running on port ${config.app.port}`)
 );
